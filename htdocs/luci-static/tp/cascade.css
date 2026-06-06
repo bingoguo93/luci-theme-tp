@@ -77,7 +77,7 @@ html {
 body {
 	background-color: var(--tp-body-bg);
 	font-family: var(--font-sans);
-	font-size: 10px;
+	font-size: 13px;
 	color: var(--tp-text);
 	min-height: 100%;
 	display: flex;
@@ -210,9 +210,9 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-nav>li>a {
 	display: block;
 	color: #fff;
-	font-size: 10px;
+	font-size: 13px;
 	position: relative;
-	padding: 8px 15px;
+	padding: 10px 15px;
 	transition: var(--transition)
 }
 
@@ -246,8 +246,8 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-sub>li>a {
 	display: block;
 	color: #fff;
-	font-size: 10px;
-	padding: 6px 15px 6px 26px;
+	font-size: 12px;
+	padding: 8px 15px 8px 26px;
 }
 
 .sidebar .side-sub>li>a::before {
@@ -317,11 +317,11 @@ h2,
 .cbi-map-title {
 	background: var(--tp-blue-light);
 	color: #fff;
-	font-size: 12px;
+	font-size: 15px;
 	font-weight: 500;
 	border-bottom: 1px solid var(--tp-border);
 	margin: 0;
-	padding: 6px
+	padding: 10px
 }
 
 .cbi-map-descr,
@@ -336,10 +336,10 @@ h2,
 
 h3,
 legend {
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: 700;
 	color: var(--tp-title);
-	margin: 8px;
+	margin: 10px 8px;
 }
 
 .cbi-value {
@@ -371,9 +371,9 @@ textarea,
 	border: 1px solid var(--tp-input-border);
 	color: var(--tp-text);
 	display: inline-block;
-	height: 22px;
-	font-size: 11px;
-	padding: 2px 4px;
+	height: 28px;
+	font-size: 13px;
+	padding: 4px 6px;
 	box-shadow: 1px 1px 0 #777;
 }
 
@@ -512,8 +512,8 @@ textarea {
 
 .cbi-value-description {
 	color: var(--tp-text-light);
-	font-size: 11px;
-	margin: 3px 0 0
+	font-size: 13px;
+	margin: 5px 0 0
 }
 
 .cbi-section-error {
@@ -540,9 +540,9 @@ textarea {
 .table .th,
 .table .td {
 	display: table-cell;
-	font-size: 10px;
-	line-height: 16px;
-	padding: 4px 8px;
+	font-size: 13px;
+	line-height: 20px;
+	padding: 8px 10px;
 	vertical-align: middle
 }
 
@@ -613,11 +613,11 @@ textarea {
 	border: 1px solid #56507b;
 	color: var(--tp-text);
 	display: inline-block;
-	font-size: 10px;
+	font-size: 13px;
 	cursor: pointer;
-	line-height: 20px;
+	line-height: 24px;
 	box-shadow: 1px 1px 0 #777;
-	padding: 0px 6px;
+	padding: 2px 10px;
 	vertical-align: middle;
 	transition: var(--transition);
 	border-radius: 4px;
@@ -639,14 +639,14 @@ textarea {
 footer {
 	background: var(--tp-content-bg);
 	border-top: 1px solid var(--tp-border-light);
-	font-size: 10px;
+	font-size: 12px;
 	color: var(--tp-text-light);
 	display: flex;
 	width: 100%;
 	max-width: var(--main-max-width);
 	justify-content: space-between;
 	margin: 0 auto;
-	padding: 10px 20px
+	padding: 15px 20px
 }
 
 .cbi-page-actions {
@@ -702,7 +702,7 @@ footer {
 	cursor: pointer;
 	display: flex;
 	flex: 0 1 auto;
-	height: 25px;
+	height: 30px;
 	margin: 4px 2px 0;
 	max-width: 48%;
 	transition: var(--transition);
@@ -719,10 +719,10 @@ footer {
 .cbi-tabmenu>li>a {
 	color: inherit;
 	display: block;
-	line-height: 25px;
+	line-height: 30px;
 	outline: none;
 	overflow: hidden;
-	padding: 0 8px;
+	padding: 0 12px;
 	text-decoration: none;
 	text-overflow: ellipsis;
 	white-space: nowrap
@@ -757,11 +757,11 @@ footer {
 	color: #fff;
 	content: attr(data-errors);
 	display: inline-flex;
-	font-size: 10px;
-	height: 14px;
+	font-size: 11px;
+	height: 16px;
 	justify-content: center;
 	margin-right: 5px;
-	min-width: 14px;
+	min-width: 16px;
 	padding: 0 3px
 }
 
@@ -1199,10 +1199,11 @@ footer {
 	background: #eee;
 	color: var(--tp-text);
 	display: inline-block;
-	font-size: 10px;
+	font-size: 11px;
 	font-weight: 700;
-	padding: 2px 4px;
-	white-space: nowrap
+	padding: 2px 6px;
+	white-space: nowrap;
+	border-radius: 2px;
 }
 
 .label.important,
@@ -1650,7 +1651,7 @@ a:hover,
 		padding: 0 12px;
 		line-height: 40px;
 		display: block;
-		font-size: 11px;
+		font-size: 13px;
 		opacity: 0.8;
 	}
 
