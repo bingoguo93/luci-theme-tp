@@ -18,8 +18,8 @@
 	--font-sans: Verdana, Arial, Helvetica, sans-serif;
 	--sidebar-width: 160px;
 	--main-width: 100%;
-	--main-max-width: 1200px;
-	--content-padding: 20px 80px;
+	--main-max-width: 100%;
+	--content-padding: 20px 40px;
 	--transition: all 0.2s ease-in-out;
 	--tp-alert-warn-bg: #fff8e8;
 	--tp-alert-warn-text: #7a4a00;
@@ -101,7 +101,7 @@ header {
 }
 
 body.tp-logo-mode header {
-	margin-bottom: 6px
+	margin-bottom: 0
 }
 
 .header-top {
@@ -291,8 +291,8 @@ body.tp-logo-mode .sidebar-footer {
 	background: var(--tp-content-bg);
 	display: flex;
 	flex-direction: column;
-	border-radius: 28px;
-	margin: 14px;
+	border-radius: 0;
+	margin: 0;
 	padding: var(--content-padding);
 }
 
@@ -1580,9 +1580,9 @@ a:hover,
 	}
 
 	.content-margin {
-		margin: 10px;
+		margin: 0;
 		padding: var(--content-padding);
-		border-radius: 14px;
+		border-radius: 0;
 	}
 
 	.cbi-value {
