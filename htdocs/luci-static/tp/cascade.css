@@ -16,7 +16,7 @@
 	--tp-table-header-bg: #F2F2F2;
 	--tp-title: #004B91;
 	--font-sans: Verdana, Arial, Helvetica, sans-serif;
-	--sidebar-width: 160px;
+	--sidebar-width: 180px;
 	--main-width: 100%;
 	--main-max-width: 100%;
 	--content-padding: 20px 40px;
@@ -210,16 +210,16 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-nav>li>a {
 	display: block;
 	color: #fff;
-	font-size: 13px;
+	font-size: 15px;
 	position: relative;
-	padding: 10px 15px;
+	padding: 12px 15px;
 	transition: var(--transition)
 }
 
 .sidebar .side-nav>li>a::before {
 	content: "◆";
-	font-size: 8px;
-	margin-right: 6px;
+	font-size: 10px;
+	margin-right: 8px;
 	vertical-align: middle
 }
 
@@ -236,7 +236,7 @@ body.tp-logo-mode .header-banner {
 
 .sidebar .side-nav>li.active>a::before {
 	content: "▼";
-	font-size: 8px
+	font-size: 10px
 }
 
 .sidebar .side-sub {
@@ -246,13 +246,14 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-sub>li>a {
 	display: block;
 	color: #fff;
-	font-size: 12px;
-	padding: 8px 15px 8px 26px;
+	font-size: 14px;
+	padding: 10px 15px 10px 28px;
 }
 
 .sidebar .side-sub>li>a::before {
 	content: "●";
-	margin-right: 6px;
+	font-size: 8px;
+	margin-right: 8px;
 }
 
 .sidebar-footer {
@@ -267,7 +268,7 @@ body.tp-logo-mode .sidebar-footer {
 .sidebar-footer a {
 	display: block;
 	color: #fff;
-	font-size: 10px;
+	font-size: 13px;
 	margin-bottom: 8px
 }
 
