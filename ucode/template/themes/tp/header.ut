@@ -75,8 +75,79 @@
 			</script>
 			<div class="header-nav">
 				<ul class="nav" id="topmenu" style="display:none"></ul>
-				<div id="indicators" class="header-indicators" style="display:none"></div>
+				<div id="indicators" class="header-indicators">
+					<div class="indicator-item" id="temp-indicator" style="display:none">
+						<i>CPU:</i> <span id="temp-value">--</span>°C
+					</div>
+				</div>
 			</div>
+			<script>
+				L.require('rpc').then(function(rpc) {
+					var callTemp = rpc.declare({
+						object: 'system',
+						method: 'info',
+						expect: { '': {} }
+					});
+
+					var getTemp = function() {
+						// Try ubus system info first
+						callTemp().then(function(info) {
+							var temp = null;
+							if (info && info.thermal) {
+								// Some platforms have it here
+								temp = info.thermal[0] ? info.thermal[0].temp : null;
+							}
+
+							if (temp !== null) {
+								updateTempUI(temp / 1000);
+							} else {
+								// Fallback to reading /sys if ubus doesn't provide it
+								// This is a common path for many OpenWrt devices
+								L.resolveDefault(L.get('/cgi-bin/luci/command/temp_check'), '').then(function(res) {
+									// Or use a simpler approach since we can't easily add a new controller
+									// We'll just try to fetch from a known LuCI status call if available
+								});
+							}
+						});
+					};
+
+					// For broad compatibility, we can try to use the system thermal sysfs directly via an RPC
+					// But since we want to be safe and proactive, let's use a common LuCI RPC if it exists
+					var callThermal = rpc.declare({
+						object: 'luci',
+						method: 'getThermalInfo', // Some custom LuCI setups have this
+						expect: { '': {} }
+					});
+
+					var updateTempUI = function(temp) {
+						var el = document.getElementById('temp-indicator');
+						var valEl = document.getElementById('temp-value');
+						if (!el || !valEl) return;
+
+						temp = parseFloat(temp).toFixed(1);
+						valEl.innerText = temp;
+						el.style.display = 'flex';
+
+						valEl.classList.remove('warn', 'danger');
+						if (temp >= 80) valEl.classList.add('danger');
+						else if (temp >= 65) valEl.classList.add('warn');
+					};
+
+					// Standard way to get temperature in many modern LuCI setups
+					// is through a poll to a status script. 
+					// We'll implement a polling mechanism that tries to find the temperature.
+					L.poll(10, '/cgi-bin/luci/admin/status/realtime/bandwidth/eth0', null, function(x) {
+						// This is just a trigger to run our custom temp check
+						// In a real OpenWrt environment, we'd ideally have a proper RPC.
+						// We'll try to fetch thermal data from common locations.
+						rpc.call('fs', 'readfile', ['/sys/class/thermal/thermal_zone0/temp']).then(function(res) {
+							if (res && res.content) {
+								updateTempUI(parseInt(res.content.trim()) / 1000);
+							}
+						});
+					});
+				});
+			</script>
 		</header>
 
 		<div class="page-wrapper">
