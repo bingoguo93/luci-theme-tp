@@ -88,7 +88,12 @@ body {
 a {
 	color: var(--tp-link);
 	text-decoration: none;
-	transition: var(--transition)
+	transition: var(--transition);
+	min-height: 44px;
+	min-width: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 
 header {
@@ -134,6 +139,9 @@ body.tp-logo-mode .header-logo {
 	user-select: none;
 	width: 100%;
 	transition: var(--transition);
+	min-height: auto;
+	min-width: auto;
+	display: flex;
 }
 
 .header-logo a:hover {
@@ -208,11 +216,13 @@ body.tp-logo-mode .header-banner {
 }
 
 .sidebar .side-nav>li>a {
-	display: block;
+	display: flex;
 	color: #fff;
 	font-size: 15px;
 	position: relative;
-	padding: 12px 15px;
+	padding: 14px 15px;
+	min-height: 48px;
+	align-items: center;
 	transition: var(--transition)
 }
 
@@ -1608,6 +1618,7 @@ a:hover,
 @media screen and (max-width: 800px) {
 	:root {
 		--content-padding: 15px;
+		--sidebar-width: 150px;
 	}
 
 	.header-logo {
@@ -1731,7 +1742,8 @@ a:hover,
 	}
 
 	.sidebar .side-nav>li>a {
-		padding: 6px 10px;
+		padding: 8px 12px;
+		font-size: 14px;
 	}
 
 	.sidebar .side-sub {
@@ -1741,12 +1753,18 @@ a:hover,
 
 	.sidebar .side-nav>li.active .side-sub {
 		display: block;
-		position: absolute;
+		position: relative;
 		background: var(--tp-sidebar-bg);
 		z-index: 100;
 		width: 100%;
 		left: 0;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+		box-shadow: none;
+		padding: 5px;
+	}
+
+	.sidebar .side-sub>li>a {
+		font-size: 13px;
+		padding: 8px 12px 8px 12px;
 	}
 
 	.header-top {
@@ -1755,6 +1773,82 @@ a:hover,
 
 	.header-logo {
 		width: 80px;
+	}
+
+	.header-nav {
+		flex-direction: column;
+		align-items: stretch;
+		padding: 0;
+	}
+
+	#topmenu {
+		flex: 1;
+		width: 100%;
+		order: 1;
+	}
+
+	.header-indicators {
+		order: 2;
+		width: 100%;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.2);
+		padding: 8px 10px;
+		height: auto;
+		gap: 10px;
+		font-size: 14px;
+	}
+
+	.indicator-item {
+		padding: 2px 0;
+	}
+
+	:root {
+		--content-padding: 12px;
+	}
+
+	.tp-brand-hostname {
+		font-size: 16px;
+	}
+
+	h1,
+	h2,
+	.cbi-map-title {
+		font-size: 14px;
+		padding: 12px;
+	}
+
+	h3,
+	legend {
+		font-size: 13px;
+		margin: 10px 8px;
+	}
+
+	.btn,
+	.cbi-button {
+		font-size: 14px;
+		line-height: 28px;
+		padding: 4px 14px;
+	}
+
+	.table .th,
+	.table .td {
+		font-size: 12px;
+		padding: 8px 6px;
+	}
+
+	input[type="text"],
+	input[type="password"],
+	select,
+	textarea,
+	.cbi-select,
+	.cbi-dropdown:not(.btn):not(.cbi-button) {
+		font-size: 14px;
+		height: 36px;
+		padding: 6px 10px;
+	}
+
+	.cbi-value-title {
+		font-size: 13px;
 	}
 
 	body.tp-logo-mode .header-banner {
@@ -1772,8 +1866,7 @@ a:hover,
 }
 
 .modal.login>h4,
-.modal.login hr,
-.header-nav {
+.modal.login hr {
 	display: none
 }
 
