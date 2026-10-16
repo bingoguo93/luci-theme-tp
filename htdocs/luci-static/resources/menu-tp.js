@@ -24,7 +24,7 @@ return baseclass.extend({
 		}
 	},
 
-	renderTabMenu(tree, url, level) {
+	renderTabMenu(tree, url, level = 0) {
 		const container = document.querySelector('#tabmenu');
 		if (!container)
 			return;
@@ -34,8 +34,8 @@ return baseclass.extend({
 		let activeNode = null;
 
 		children.forEach(child => {
-			const isActive = (L.env.dispatchpath[3 + (level || 0)] == child.name);
-			const className = 'tabmenu-item-%s%s'.format(child.name, isActive ? ' active' : '');
+			const isActive = (L.env.dispatchpath[3 + level] == child.name);
+			const className = `tabmenu-item-${child.name}${isActive ? ' active' : ''}`;
 
 			ul.appendChild(E('li', { 'class': className }, [
 				E('a', { 'href': L.url(url, child.name) }, [ _(child.title) ])]));
@@ -51,7 +51,7 @@ return baseclass.extend({
 		container.style.display = '';
 
 		if (activeNode)
-			this.renderTabMenu(activeNode, url + '/' + activeNode.name, (level || 0) + 1);
+			this.renderTabMenu(activeNode, url + '/' + activeNode.name, level + 1);
 	},
 
 	renderSideMenu(tree, url) {
@@ -106,6 +106,9 @@ return baseclass.extend({
 
 	renderModeMenu(tree) {
 		const ul = document.querySelector('#topmenu');
+		if (!ul)
+			return;
+
 		const children = ui.menu.getChildren(tree);
 
 		children.forEach((child, index) => {
