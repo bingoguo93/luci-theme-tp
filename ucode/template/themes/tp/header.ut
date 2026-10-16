@@ -21,7 +21,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="darkreader-lock">
 		<link rel="stylesheet" href="{{ media }}/cascade.css">
-		<link rel="icon" type="image/png" href="{{ media }}/imgs/favicon.png">
+		<link rel="icon" type="image/png" sizes="128x128" href="{{ media }}/imgs/favicon.png">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
@@ -81,14 +81,14 @@
 					});
 				})();
 			</script>
-			<div class="header-nav">
+			<nav class="header-nav" aria-label="{{ _('Main navigation') }}">
 				<ul class="nav" id="topmenu" style="display:none"></ul>
 				<div id="indicators" class="header-indicators">
 					<div class="indicator-item" id="temp-indicator" style="display:none">
 						<i>CPU:</i> <span id="temp-value" class="indicator-temp">--</span>°C
 					</div>
 				</div>
-			</div>
+			</nav>
 			<script>
 				/* temperature polling lives in temp-tp.js so the browser can cache it;
 				   the logo-mode script above stays inline to avoid FOUC */
@@ -97,7 +97,7 @@
 		</header>
 
 		<div class="page-wrapper">
-			<aside class="sidebar" id="sidebar">
+			<aside class="sidebar" id="sidebar" role="navigation" aria-label="{{ _('Sidebar navigation') }}">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
 					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">更多 TP-LINK 产品，<br>请点击查看 >>...</a>
