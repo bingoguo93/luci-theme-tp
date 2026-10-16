@@ -107,6 +107,19 @@ a {
 	justify-content: center;
 }
 
+/* keyboard focus must stay visible: an accent-coloured outline for links,
+   buttons and inputs, scoped to :focus-visible so plain mouse clicks keep
+   the default look without a focus ring */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+	outline: 2px solid var(--tp-border, #FCB143);
+	outline-offset: 2px
+}
+
 header {
 	background: var(--tp-sidebar-bg);
 	flex-shrink: 0;
