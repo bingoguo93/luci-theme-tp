@@ -72,6 +72,11 @@
 					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');
 
 					brand.addEventListener('click', function(ev) {
+						/* modified clicks keep their normal link behaviour
+						   (open in new tab/window) instead of toggling */
+						if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey || ev.button)
+							return;
+
 						ev.preventDefault();
 
 						var on = !brand.classList.contains('logo-mode');
