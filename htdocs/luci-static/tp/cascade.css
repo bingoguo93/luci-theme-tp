@@ -828,6 +828,16 @@ footer {
 	white-space: nowrap
 }
 
+/* the cbi-select and the tab strips suppress outlines for mouse focus;
+   give keyboard focus its ring back. Drawn inside (-2px) so the clipped
+   tab strip cannot cut it off */
+.cbi-select select:focus-visible,
+.tabs>li>a:focus-visible,
+.cbi-tabmenu>li>a:focus-visible {
+	outline: 2px solid var(--tp-border, #FCB143);
+	outline-offset: -2px
+}
+
 .tabs>li.active,
 .cbi-tabmenu>li.active,
 .cbi-tabmenu>li.cbi-tab {
