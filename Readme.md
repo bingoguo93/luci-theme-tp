@@ -47,6 +47,16 @@ Theme assets were trimmed from ~880 KB to under 60 KB:
 The header banner is lazy-loaded (`data-src`) and only fetched when the logo
 display mode needs it, so it costs nothing on normal page loads.
 
+## Development
+
+Static checks (JS syntax, ucode template delimiter pairing, CSS brace
+balance, asset and module reference resolution) run as a standalone
+`lint` job in CI and can be run locally with:
+
+```sh
+node scripts/lint.mjs
+```
+
 ## License
 
 Apache-2.0 (see `Makefile`).
