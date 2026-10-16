@@ -193,7 +193,12 @@ body.tp-logo-mode .header-logo {
 }
 
 .header-logo a.logo-mode .tp-brand-logo {
-	display: inline-block
+	display: inline-block;
+	/* the logo is nominally 160px tall but the header-top is only 80px
+	   (60px on phones): clamp it so logo mode cannot overflow the header
+	   or the fixed-width brand column sideways */
+	max-height: 80px;
+	max-width: 100%
 }
 
 .header-banner {
@@ -2018,6 +2023,10 @@ a:hover {
 
 	body.tp-logo-mode .header-banner {
 		display: none;
+	}
+
+	.header-logo a.logo-mode .tp-brand-logo {
+		max-height: 60px;
 	}
 
 	/* the login modal's own rules outrank the generic mobile sizing
