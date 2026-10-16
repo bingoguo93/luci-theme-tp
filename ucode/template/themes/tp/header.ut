@@ -21,7 +21,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="darkreader-lock">
 		<link rel="stylesheet" href="{{ media }}/cascade.css">
-		<link rel="icon" href="{{ media }}/imgs/header.png" sizes="any">
+		<link rel="icon" type="image/png" href="{{ media }}/imgs/favicon.png">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
@@ -43,29 +43,37 @@
 					</a>
 				</div>
 				<div class="header-banner">
-					<img src="{{ media }}/imgs/header.png" alt="TP-Link">
+					<img data-src="{{ media }}/imgs/header.webp" alt="" width="2804" height="466" decoding="async">
 				</div>
 			</div>
 			<script>
 				(function() {
 					var brand = document.getElementById('tp-brand');
+					var banner = document.querySelector('.header-banner img');
 					var key = 'luci-theme-tp-brand-logo';
 
 					if (!brand)
 						return;
 
-					if (window.localStorage && localStorage.getItem(key) === '1')
-						brand.classList.add('logo-mode');
+					function applyLogoMode(on) {
+						brand.classList.toggle('logo-mode', on);
+						document.body.classList.toggle('tp-logo-mode', on);
 
-					document.body.classList.toggle('tp-logo-mode', brand.classList.contains('logo-mode'));
+						/* the banner is hidden by default, only fetch it when needed */
+						if (on && banner && !banner.src)
+							banner.src = banner.getAttribute('data-src');
+					}
+
+					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');
 
 					brand.addEventListener('click', function(ev) {
 						ev.preventDefault();
-						brand.classList.toggle('logo-mode');
-						document.body.classList.toggle('tp-logo-mode', brand.classList.contains('logo-mode'));
+
+						var on = !brand.classList.contains('logo-mode');
+						applyLogoMode(on);
 
 						if (window.localStorage) {
-							if (brand.classList.contains('logo-mode'))
+							if (on)
 								localStorage.setItem(key, '1');
 							else
 								localStorage.removeItem(key);
@@ -77,75 +85,58 @@
 				<ul class="nav" id="topmenu" style="display:none"></ul>
 				<div id="indicators" class="header-indicators">
 					<div class="indicator-item" id="temp-indicator" style="display:none">
-						<i>CPU:</i> <span id="temp-value">--</span>°C
+						<i>CPU:</i> <span id="temp-value" class="indicator-temp">--</span>°C
 					</div>
 				</div>
 			</div>
 			<script>
 				L.require('rpc').then(function(rpc) {
-					var callTemp = rpc.declare({
-						object: 'system',
-						method: 'info',
+					/* ubus "file" object (rpcd-mod-file), read-only, path is positional */
+					var readThermal = rpc.declare({
+						object: 'file',
+						method: 'read',
+						params: [ 'path' ],
 						expect: { '': {} }
 					});
 
-					var getTemp = function() {
-						// Try ubus system info first
-						callTemp().then(function(info) {
-							var temp = null;
-							if (info && info.thermal) {
-								// Some platforms have it here
-								temp = info.thermal[0] ? info.thermal[0].temp : null;
-							}
+					var zone = '/sys/class/thermal/thermal_zone0/temp';
 
-							if (temp !== null) {
-								updateTempUI(temp / 1000);
-							} else {
-								// Fallback to reading /sys if ubus doesn't provide it
-								// This is a common path for many OpenWrt devices
-								L.resolveDefault(L.get('/cgi-bin/luci/command/temp_check'), '').then(function(res) {
-									// Or use a simpler approach since we can't easily add a new controller
-									// We'll just try to fetch from a known LuCI status call if available
-								});
-							}
-						});
-					};
-
-					// For broad compatibility, we can try to use the system thermal sysfs directly via an RPC
-					// But since we want to be safe and proactive, let's use a common LuCI RPC if it exists
-					var callThermal = rpc.declare({
-						object: 'luci',
-						method: 'getThermalInfo', // Some custom LuCI setups have this
-						expect: { '': {} }
-					});
-
-					var updateTempUI = function(temp) {
+					function updateTempUI(temp) {
 						var el = document.getElementById('temp-indicator');
 						var valEl = document.getElementById('temp-value');
-						if (!el || !valEl) return;
+						if (!el || !valEl)
+							return;
 
-						temp = parseFloat(temp).toFixed(1);
-						valEl.innerText = temp;
+						valEl.textContent = temp.toFixed(1);
 						el.style.display = 'flex';
 
 						valEl.classList.remove('warn', 'danger');
-						if (temp >= 80) valEl.classList.add('danger');
-						else if (temp >= 65) valEl.classList.add('warn');
-					};
+						if (temp >= 80)
+							valEl.classList.add('danger');
+						else if (temp >= 65)
+							valEl.classList.add('warn');
+					}
 
-					// Standard way to get temperature in many modern LuCI setups
-					// is through a poll to a status script. 
-					// We'll implement a polling mechanism that tries to find the temperature.
-					L.poll(10, '/cgi-bin/luci/admin/status/realtime/bandwidth/eth0', null, function(x) {
-						// This is just a trigger to run our custom temp check
-						// In a real OpenWrt environment, we'd ideally have a proper RPC.
-						// We'll try to fetch thermal data from common locations.
-						rpc.call('fs', 'readfile', ['/sys/class/thermal/thermal_zone0/temp']).then(function(res) {
-							if (res && res.content) {
-								updateTempUI(parseInt(res.content.trim()) / 1000);
-							}
+					function refreshTemp() {
+						readThermal(zone).then(function(res) {
+							var raw = (res && res.content) ? parseInt(String(res.content).trim(), 10) : NaN;
+
+							if (isNaN(raw))
+								return;
+
+							/* accept both millidegrees and plain degrees */
+							updateTempUI(raw > 1000 ? raw / 1000 : raw);
+						}, function() {
+							/* no thermal zone or no ubus access - keep the indicator hidden */
 						});
-					});
+					}
+
+					refreshTemp();
+
+					setInterval(function() {
+						if (!document.hidden)
+							refreshTemp();
+					}, 10000);
 				});
 			</script>
 		</header>
@@ -154,7 +145,7 @@
 			<aside class="sidebar" id="sidebar">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
-					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">更多 TP-LINK 产品，</br>请点击查看 >>...</a>
+					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">更多 TP-LINK 产品，<br>请点击查看 >>...</a>
 				</div>
 			</aside>
 

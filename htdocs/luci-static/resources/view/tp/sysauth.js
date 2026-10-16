@@ -6,6 +6,10 @@ return view.extend({
 	render() {
 		const form = document.querySelector('form');
 		const btn = document.querySelector('button');
+		const pwd = document.querySelector('input[type="password"]');
+
+		if (!form || !btn)
+			return '';
 
 		const dlg = ui.showModal(
 			_('Authorization Required'),
@@ -33,11 +37,11 @@ return view.extend({
 			form.submit();
 		});
 
-		document.querySelector('input[type="password"]').focus();
+		if (pwd)
+			pwd.focus();
 
 		return '';
 	},
 
-	addFooter() {},
-
+	addFooter() {}
 });
