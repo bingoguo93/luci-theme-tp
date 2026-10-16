@@ -85,7 +85,7 @@
 				<ul class="nav" id="topmenu" style="display:none"></ul>
 				<div id="indicators" class="header-indicators">
 					<div class="indicator-item" id="temp-indicator" style="display:none">
-						<i>CPU:</i> <span id="temp-value" class="indicator-temp">--</span>°C
+						<i>{{ _('CPU:') }}</i> <span id="temp-value" class="indicator-temp">--</span>°C
 					</div>
 				</div>
 			</nav>
@@ -100,7 +100,7 @@
 			<aside class="sidebar" id="sidebar" role="navigation" aria-label="{{ _('Sidebar navigation') }}">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
-					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">更多 TP-LINK 产品，<br>请点击查看 >>...</a>
+					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">{{ _('更多 TP-LINK 产品，') }}<br>{{ _('请点击查看 >>...') }}</a>
 				</div>
 			</aside>
 
