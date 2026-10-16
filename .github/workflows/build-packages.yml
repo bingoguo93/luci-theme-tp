@@ -26,7 +26,8 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        # pinned to a fixed commit instead of @v5 for supply-chain safety
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 1
           path: ${{ github.event.repository.name }}
@@ -40,7 +41,8 @@ jobs:
           NO_REFRESH_CHECK: true
 
       - name: upload
-        uses: actions/upload-artifact@v5
+        # pinned to a fixed commit instead of @v5 for supply-chain safety
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: ${{ matrix.branch }}-packages
           path: |

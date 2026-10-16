@@ -27,12 +27,13 @@ jobs:
       contents: write
     
     steps:
-      - uses: actions/download-artifact@v5
+      # pinned to fixed commits instead of floating tags for supply-chain safety
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           merge-multiple: true
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: ${{ inputs.version }}
           name: Release ${{ inputs.version }}
