@@ -70,6 +70,12 @@
 	.header-banner img {
 		filter: brightness(0.7);
 	}
+
+	/* the login backdrop is a fixed light blue that clashes with the
+	   dark login card; follow the dark palette like everything else */
+	#modal_overlay.login-overlay {
+		background: var(--tp-body-bg);
+	}
 }
 
 *,
