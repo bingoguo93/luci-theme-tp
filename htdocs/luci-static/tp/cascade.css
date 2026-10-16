@@ -1772,12 +1772,19 @@ a:hover {
 
 	#topmenu {
 		flex: 1;
-		display: flex !important;
 		list-style: none;
 		overflow-x: auto;
 		height: 40px;
 		align-items: center;
 		scrollbar-width: none;
+	}
+
+	/* only override the inline display:none once menu-tp.js has filled
+	   the list: without this an empty 40px row shows on every page load
+	   (and stays when a menu level has no entries). Browsers without
+	   :not(:empty) fall back to the inline display switch as before. */
+	#topmenu:not(:empty) {
+		display: flex !important;
 	}
 
 	.header-indicators {
