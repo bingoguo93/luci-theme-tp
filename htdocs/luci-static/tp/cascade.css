@@ -1841,6 +1841,13 @@ a:hover {
 	.cbi-tabmenu>li>a {
 		line-height: 36px;
 	}
+
+	/* larger checkboxes and radios are easier to hit with a finger */
+	input[type="checkbox"],
+	input[type="radio"] {
+		width: 20px;
+		height: 20px;
+	}
 }
 
 @media screen and (max-width: 600px) {
@@ -2003,4 +2010,13 @@ a:hover {
 
 :is(body[data-page="admin-status-iptables"], body[data-page="admin-status-nftables-iptables"]) .cbi-tabmenu {
 	margin-top: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
 }
