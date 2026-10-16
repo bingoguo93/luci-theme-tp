@@ -9,6 +9,13 @@
 
 {% include('header', { blank_page: true }) %}
 
+<noscript>
+	<div class="alert-message warning">
+		<h4>{{ _('JavaScript required!') }}</h4>
+		<p>{{ _('You must enable JavaScript in your browser or LuCI will not work properly.') }}</p>
+	</div>
+</noscript>
+
 <section hidden>
 	<div class="tp-login-header">
 		<h2>{{ boardinfo.hostname ?? '?' }}</h2>
