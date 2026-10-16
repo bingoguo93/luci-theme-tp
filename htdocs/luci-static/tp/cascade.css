@@ -1848,6 +1848,11 @@ a:hover {
 		width: 20px;
 		height: 20px;
 	}
+
+	/* dialogs waste less vertical space on phones */
+	.modal {
+		margin: 1.5em auto;
+	}
 }
 
 @media screen and (max-width: 600px) {
@@ -1991,6 +1996,21 @@ a:hover {
 
 	body.tp-logo-mode .header-banner {
 		display: none;
+	}
+
+	/* the login modal's own rules outrank the generic mobile sizing
+	   (.modal.login input is 2 classes + element): restore the same
+	   finger-friendly 40px controls and padding the rest of the theme gets */
+	.modal.login input {
+		height: 40px;
+	}
+
+	.modal.login>button.important {
+		line-height: 32px;
+	}
+
+	#modal_overlay.login-overlay {
+		padding: 12px;
 	}
 }
 
