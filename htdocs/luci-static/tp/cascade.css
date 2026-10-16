@@ -2,7 +2,6 @@
 	--tp-blue-dark: #004B91;
 	--tp-blue: #005696;
 	--tp-blue-light: #7DA7EB;
-	--tp-header-bg: #004B91;
 	--tp-sidebar-bg: #004B91;
 	--tp-content-bg: #FFF;
 	--tp-body-bg: #FFF;
@@ -17,7 +16,6 @@
 	--tp-title: #004B91;
 	--font-sans: Verdana, Arial, Helvetica, sans-serif;
 	--sidebar-width: 180px;
-	--main-width: 100%;
 	--main-max-width: 100%;
 	--content-padding: 20px 40px;
 	--transition: all 0.2s ease-in-out;
@@ -1045,7 +1043,6 @@ footer {
 	list-style: none;
 	margin: 0 !important;
 	overflow: hidden;
-	/* padding: 0 8px; */
 	width: 100%
 }
 
