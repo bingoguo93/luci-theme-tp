@@ -54,6 +54,15 @@
 		filter: brightness(0.8) contrast(1.1);
 	}
 
+	/* keep the brand logo and small UI icons unfiltered: the filter is
+	   meant for content images/photos, and dimming icons hurts legibility */
+	.tp-brand-logo,
+	.ifacebox img,
+	.ifacebadge img,
+	.cbi-dropdown img {
+		filter: none
+	}
+
 	.header-banner img {
 		filter: brightness(0.7);
 	}
