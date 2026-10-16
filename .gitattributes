@@ -1,0 +1,24 @@
+# Normalize line endings: everything textual is LF in the repository and on
+# checkout, so a Windows worktree cannot smuggle CRLF into JS/ucode/CSS.
+* text=auto eol=lf
+
+# explicit text types
+*.js text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.ut text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+*.svg text eol=lf
+Makefile text eol=lf
+root/etc/uci-defaults/* text eol=lf
+
+# images stay untouched
+*.png binary
+*.webp binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
