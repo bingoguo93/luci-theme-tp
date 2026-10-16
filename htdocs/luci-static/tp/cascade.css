@@ -18,7 +18,11 @@
 	--sidebar-width: 180px;
 	--main-max-width: 100%;
 	--content-padding: 20px 40px;
-	--transition: all 0.2s ease-in-out;
+	/* explicit property list instead of `all`: every state change in this
+	   theme animates only these properties, and `all` would needlessly run
+	   the transition machinery on unrelated property changes (e.g. layout
+	   updates from JS) */
+	--transition: background-color .2s ease-in-out, border-color .2s ease-in-out, box-shadow .2s ease-in-out, color .2s ease-in-out, filter .2s ease-in-out, font-weight .2s ease-in-out, margin .2s ease-in-out, opacity .2s ease-in-out, padding .2s ease-in-out, transform .2s ease-in-out;
 	--tp-alert-warn-bg: #fff8e8;
 	--tp-alert-warn-text: #7a4a00;
 	--tp-alert-err-bg: #fff5f5;
