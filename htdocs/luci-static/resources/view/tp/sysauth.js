@@ -22,8 +22,12 @@ return view.extend({
 			overlay.classList.add('login-overlay');
 
 		form.addEventListener('keypress', (ev) => {
-			if (ev.key === 'Enter')
+			if (ev.key === 'Enter') {
+				/* one explicit click only: without preventDefault the
+				   browser's implicit submission races form.submit() */
+				ev.preventDefault();
 				btn.click();
+			}
 		});
 
 		btn.addEventListener('click', () => {
