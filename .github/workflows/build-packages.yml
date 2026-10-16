@@ -4,6 +4,13 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# one build per ref at a time and drop superseded pending builds; builds
+# started by the release workflow are never cancelled mid-flight
+# (github.workflow is the caller's name when this file is reused)
+concurrency:
+  group: build-packages-${{ github.ref }}
+  cancel-in-progress: ${{ github.workflow == 'build-packages' }}
+
 jobs:
   build:
     name: ${{ matrix.branch }}
@@ -25,7 +32,8 @@ jobs:
           path: ${{ github.event.repository.name }}
 
       - name: build
-        uses: openwrt/gh-action-sdk@main
+        # pinned to a fixed commit instead of @main for supply-chain safety
+        uses: openwrt/gh-action-sdk@f5813d30eeef3534b58ac7e79c5d8842b6035434
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
           PACKAGES: ${{ github.event.repository.name }}
