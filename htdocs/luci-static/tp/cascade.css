@@ -116,10 +116,6 @@ header {
 	padding: 0
 }
 
-body.tp-logo-mode header {
-	margin-bottom: 0
-}
-
 .header-top {
 	width: 100%;
 	display: flex;
@@ -1705,12 +1701,6 @@ a:hover {
 
 	.tp-brand-hostname {
 		font-size: 18px;
-	}
-
-	.content-margin {
-		margin: 0;
-		padding: var(--content-padding);
-		border-radius: 0;
 	}
 
 	.cbi-value {
