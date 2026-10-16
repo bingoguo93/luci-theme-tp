@@ -90,54 +90,9 @@
 				</div>
 			</div>
 			<script>
-				L.require('rpc').then(function(rpc) {
-					/* ubus "file" object (rpcd-mod-file), read-only, path is positional */
-					var readThermal = rpc.declare({
-						object: 'file',
-						method: 'read',
-						params: [ 'path' ],
-						expect: { '': {} }
-					});
-
-					var zone = '/sys/class/thermal/thermal_zone0/temp';
-
-					function updateTempUI(temp) {
-						var el = document.getElementById('temp-indicator');
-						var valEl = document.getElementById('temp-value');
-						if (!el || !valEl)
-							return;
-
-						valEl.textContent = temp.toFixed(1);
-						el.style.display = 'flex';
-
-						valEl.classList.remove('warn', 'danger');
-						if (temp >= 80)
-							valEl.classList.add('danger');
-						else if (temp >= 65)
-							valEl.classList.add('warn');
-					}
-
-					function refreshTemp() {
-						readThermal(zone).then(function(res) {
-							var raw = (res && res.content) ? parseInt(String(res.content).trim(), 10) : NaN;
-
-							if (isNaN(raw))
-								return;
-
-							/* accept both millidegrees and plain degrees */
-							updateTempUI(raw > 1000 ? raw / 1000 : raw);
-						}, function() {
-							/* no thermal zone or no ubus access - keep the indicator hidden */
-						});
-					}
-
-					refreshTemp();
-
-					setInterval(function() {
-						if (!document.hidden)
-							refreshTemp();
-					}, 10000);
-				});
+				/* temperature polling lives in temp-tp.js so the browser can cache it;
+				   the logo-mode script above stays inline to avoid FOUC */
+				L.require('temp-tp');
 			</script>
 		</header>
 
