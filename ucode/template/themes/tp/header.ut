@@ -39,7 +39,7 @@
 				<div class="header-logo">
 					<a id="tp-brand" href="{{ dispatcher.build_url() }}">
 						<span class="tp-brand-hostname">{{ boardinfo.hostname ?? '?' }}</span>
-						<img class="tp-brand-logo" src="{{ media }}/imgs/logo.svg" alt="TP-Link">
+						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg" alt="TP-Link">
 					</a>
 				</div>
 				<div class="header-banner">
@@ -49,6 +49,7 @@
 			<script>
 				(function() {
 					var brand = document.getElementById('tp-brand');
+					var logo = brand ? brand.querySelector('.tp-brand-logo') : null;
 					var banner = document.querySelector('.header-banner img');
 					var key = 'luci-theme-tp-brand-logo';
 
@@ -59,9 +60,13 @@
 						brand.classList.toggle('logo-mode', on);
 						document.body.classList.toggle('tp-logo-mode', on);
 
-						/* the banner is hidden by default, only fetch it when needed */
-						if (on && banner && !banner.src)
-							banner.src = banner.getAttribute('data-src');
+						/* both images are display:none by default - only fetch them when needed */
+						if (on) {
+							[ logo, banner ].forEach(function(img) {
+								if (img && !img.src)
+									img.src = img.getAttribute('data-src');
+							});
+						}
 					}
 
 					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');
