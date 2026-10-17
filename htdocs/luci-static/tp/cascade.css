@@ -87,14 +87,17 @@
 }
 
 html {
-	font-size: 100%;
+	/* fluid root font: scales smoothly with the viewport so all em/rem based
+	   sizes (sidebar items, buttons, table cells, …) adapt without extra
+	   media queries. 16px at ≥1440px, ~13px at 360px. */
+	font-size: clamp(13px, 0.72rem + 0.3vw, 16px);
 	height: 100%
 }
 
 body {
 	background-color: var(--tp-body-bg);
 	font-family: var(--font-sans);
-	font-size: 13px;
+	font-size: 0.875rem;
 	color: var(--tp-text);
 	min-height: 100%;
 	display: flex;
@@ -139,17 +142,24 @@ header {
 	width: 100%;
 	display: flex;
 	align-items: stretch;
-	height: 80px
+	/* scale the top bar with the fluid root font so it stays compact on
+	   small screens and tall on wide ones; clamp the extremes */
+	height: clamp(56px, 6vw, 80px);
+	min-height: 48px
 }
 
 .header-logo {
-	width: var(--sidebar-width);
+	/* track the sidebar width variable but never let the logo column
+	   shrink below the smallest readable size on any device */
+	width: clamp(88px, var(--sidebar-width), var(--sidebar-width));
+	flex: 0 0 clamp(88px, var(--sidebar-width), var(--sidebar-width));
 	background: var(--tp-blue-dark);
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
 	padding-left: 15px;
-	border-right: 0
+	border-right: 0;
+	overflow: hidden
 }
 
 body.tp-logo-mode .header-logo {
@@ -1683,6 +1693,10 @@ a:hover {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	/* let the nav and indicators wrap to a second row on narrow viewports
+	   instead of being squeezed together; gap keeps the rows separated */
+	flex-wrap: wrap;
+	gap: 0 12px;
 	padding: 0 20px;
 	background: var(--tp-blue-dark);
 }
@@ -1696,6 +1710,15 @@ a:hover {
 	list-style: none;
 	margin: 0;
 	padding: 0 8px;
+	/* allow horizontal scrolling inside the menu on small screens so
+	   long item sets never push the indicators off-screen */
+	overflow-x: auto;
+	scrollbar-width: none;
+	min-width: 0
+}
+
+#topmenu::-webkit-scrollbar {
+	display: none
 }
 
 #topmenu li {
@@ -1758,10 +1781,11 @@ a:hover {
 
 	.header-logo {
 		width: 100px;
+		flex: 0 0 100px;
 	}
 
 	.tp-brand-hostname {
-		font-size: 18px;
+		font-size: 1.125rem;
 	}
 
 	.cbi-value {
@@ -1812,7 +1836,7 @@ a:hover {
 		flex: 1;
 		list-style: none;
 		overflow-x: auto;
-		height: 40px;
+		height: 2.5rem;
 		align-items: center;
 		scrollbar-width: none;
 	}
@@ -1827,7 +1851,8 @@ a:hover {
 
 	.header-indicators {
 		padding: 0 10px;
-		height: 40px;
+		height: 2.5rem;
+		font-size: 0.8rem;
 	}
 
 	#topmenu::-webkit-scrollbar {
@@ -1841,9 +1866,9 @@ a:hover {
 	#topmenu li a {
 		color: #fff;
 		padding: 0 12px;
-		line-height: 40px;
+		line-height: 2.5rem;
 		display: block;
-		font-size: 14px;
+		font-size: 0.9rem;
 		opacity: 0.8;
 	}
 
@@ -1912,56 +1937,64 @@ a:hover {
 		border-bottom: 1px solid var(--tp-border);
 	}
 
+	/* IMPORTANT: keep the top-level list as a vertical (block) column,
+	   NOT display:flex + flex-wrap. When it was flex, a parent <li>
+	   containing a nested .side-sub submenu got squeezed into the same
+	   50% grid slot as its siblings, and the submenu items (e.g. the
+	   "管理权/ACL" entry under "系统") visually escaped into the outer
+	   navigation area - showing up as a stray duplicate in the top bar.
+	   Block layout keeps the submenu as a nested child inside its parent
+	   item, so it only appears once, indented under the active entry. */
 	.sidebar .side-nav {
-		display: flex;
-		flex-wrap: wrap;
-		padding: 5px;
+		display: block;
+		padding: 4px 0;
 	}
 
 	.sidebar .side-nav>li {
-		flex: 1 1 50%;
-		min-width: 120px;
+		display: block;
+		width: 100%;
 	}
 
 	.sidebar .side-nav>li>a {
-		padding: 12px 12px;
-		font-size: 16px;
+		padding: 10px 14px;
+		font-size: 0.95rem;
 	}
 
+	/* submenus stay as a nested column under their active parent,
+	   spanning the full width of the now-vertical sidebar */
 	.sidebar .side-sub {
-		display: none;
-		/* Hide submenus on very small screens to save space, or make them absolute */
-	}
-
-	.sidebar .side-nav>li.active .side-sub {
 		display: block;
 		position: relative;
-		background: var(--tp-sidebar-bg);
-		z-index: 100;
+		background: rgba(0, 0, 0, 0.18);
+		z-index: 1;
 		width: 100%;
-		left: 0;
-		box-shadow: none;
-		padding: 0;
 		margin: 0;
+		padding: 4px 0 4px 20px;
+		border-left: 3px solid var(--tp-border);
+		border-radius: 0;
 	}
 
 	.sidebar .side-sub>li>a {
-		font-size: 14px;
-		padding: 10px 12px;
+		font-size: 0.85rem;
+		padding: 8px 14px;
 	}
 
 	.header-top {
-		height: 60px;
+		/* shrink the header bar on phones; clamp keeps it sensible on
+		   very small (360px) screens */
+		height: clamp(48px, 10vw, 60px);
 	}
 
 	.header-logo {
 		width: 80px;
+		flex: 0 0 80px;
 	}
 
 	.header-nav {
 		flex-direction: column;
 		align-items: stretch;
 		padding: 0;
+		gap: 0;
 	}
 
 	#topmenu {
@@ -1975,10 +2008,10 @@ a:hover {
 		width: 100%;
 		justify-content: center;
 		background: rgba(0, 0, 0, 0.2);
-		padding: 8px 10px;
+		padding: 6px 10px;
 		height: auto;
 		gap: 10px;
-		font-size: 14px;
+		font-size: 0.85rem;
 	}
 
 	.indicator-item {
@@ -1990,32 +2023,32 @@ a:hover {
 	}
 
 	.tp-brand-hostname {
-		font-size: 16px;
+		font-size: 1rem;
 	}
 
 	h1,
 	h2,
 	.cbi-map-title {
-		font-size: 14px;
-		padding: 12px;
+		font-size: 1rem;
+		padding: 10px;
 	}
 
 	h3,
 	legend {
-		font-size: 13px;
+		font-size: 0.9rem;
 		margin: 10px 8px;
 	}
 
 	.btn,
 	.cbi-button {
-		font-size: 14px;
-		line-height: 32px;
-		padding: 4px 14px;
+		font-size: 0.9rem;
+		line-height: 2rem;
+		padding: 4px 12px;
 	}
 
 	.table .th,
 	.table .td {
-		font-size: 13px;
+		font-size: 0.8rem;
 		padding: 8px 6px;
 	}
 
@@ -2082,6 +2115,7 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
 	*,
 	*::before,
 	*::after {
