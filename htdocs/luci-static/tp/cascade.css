@@ -1015,7 +1015,8 @@ footer {
 .network-status-table .ifacebox-body>div {
 	display: flex;
 	flex-wrap: wrap;
-	margin: -.125em
+	margin: -.125em;
+	min-height: 1.2em;
 }
 
 #dsl_status_table .ifacebox-body span>strong {
