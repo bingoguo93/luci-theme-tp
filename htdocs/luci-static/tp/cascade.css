@@ -179,7 +179,7 @@ body.tp-logo-mode .header-logo {
 
 .tp-brand-hostname {
 	display: block;
-	font-size: 28px;
+	font-size: 20px;
 	font-weight: 700;
 	letter-spacing: 0;
 	overflow: hidden;
@@ -218,10 +218,13 @@ body.tp-logo-mode .header-banner {
 	display: block
 }
 
+/* the banner is a 6:1 image: show it whole instead of cropping it into
+   a thin strip, anchored next to the brand area */
 .header-banner img {
 	height: 100%;
 	width: 100%;
-	object-fit: cover
+	object-fit: contain;
+	object-position: center
 }
 
 .page-wrapper {
@@ -1684,6 +1687,39 @@ a:hover {
 	background: var(--tp-blue-dark);
 }
 
+/* the top menu is horizontal on every viewport; without these base rules
+   the entries stacked vertically on desktop (only the small-screen blocks
+   below ever set a layout). The responsive blocks just tune density. */
+#topmenu {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0 8px;
+}
+
+#topmenu li {
+	flex: 0 0 auto;
+}
+
+#topmenu li a {
+	color: #fff;
+	padding: 0 14px;
+	line-height: 44px;
+	font-size: 15px;
+	opacity: 0.85;
+}
+
+#topmenu li a:hover {
+	opacity: 1;
+}
+
+#topmenu li.active a {
+	opacity: 1;
+	font-weight: 700;
+	box-shadow: inset 0 -3px 0 #fff;
+}
+
 .header-indicators {
 	display: flex;
 	align-items: center;
@@ -1807,7 +1843,7 @@ a:hover {
 		padding: 0 12px;
 		line-height: 40px;
 		display: block;
-		font-size: 13px;
+		font-size: 14px;
 		opacity: 0.8;
 	}
 
