@@ -36,7 +36,7 @@ return baseclass.extend({
 			const className = 'tabmenu-item-%s %s'.format(child.name, activeClass);
 
 			ul.appendChild(E('li', { 'class': className }, [
-				E('a', { 'href': L.url(url, child.name) }, [ _(child.title) ] )]));
+				E('a', { 'href': L.url(url, child.name) }, [_(child.title)])]));
 
 			if (isActive)
 				activeNode = child;
@@ -77,8 +77,8 @@ return baseclass.extend({
 			const hasChildren = children2.length > 0;
 			const linkUrl = hasChildren ? L.url(url, child.name) : L.url(url, child.name);
 
-			const li = E('li', { 'class': isActive ? 'active' : '' }, [
-				E('a', { 'href': linkUrl }, [ _(child.title) ])
+			const li = E('li', { 'class': (isActive ? 'active' : '') + ' side-item-' + child.name }, [
+				E('a', { 'href': linkUrl }, [_(child.title)])
 			]);
 
 			if (hasChildren && isActive) {
@@ -86,8 +86,8 @@ return baseclass.extend({
 				children2.forEach(child2 => {
 					const subPath = (url + '/' + child.name + '/' + child2.name).replace(/^\/+/, '');
 					const isSubActive = currentPath == subPath;
-					subUl.appendChild(E('li', { 'class': isSubActive ? 'active' : '' }, [
-						E('a', { 'href': L.url(url, child.name, child2.name) }, [ _(child2.title) ])
+					subUl.appendChild(E('li', { 'class': (isSubActive ? 'active' : '') + ' side-sub-item-' + child2.name }, [
+						E('a', { 'href': L.url(url, child.name, child2.name) }, [_(child2.title)])
 					]));
 				});
 				li.appendChild(subUl);
@@ -139,7 +139,7 @@ return baseclass.extend({
 				: index === 0;
 
 			const li = E('li', { 'class': isActive ? 'active' : '' }, [
-				E('a', { 'href': L.url(child.name) }, [ _(child.title) ])
+				E('a', { 'href': L.url(child.name) }, [_(child.title)])
 			]);
 
 			li.addEventListener('click', (ev) => {
