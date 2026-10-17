@@ -82,9 +82,9 @@ return baseclass.extend({
 			if (re.test(title))
 				return glyph;
 
-			return '◆';
+			return '🧩';
 		} catch (e) {
-			return '◆';
+			return '🧩';
 		}
 	},
 
@@ -127,7 +127,7 @@ return baseclass.extend({
 					const isSubActive = currentPath == subPath;
 					subUl.appendChild(E('li', { 'class': (isSubActive ? 'active ' : '') + 'side-sub-item-' + child2.name }, [
 						E('a', { 'href': L.url(url, child.name, child2.name), 'title': _(child2.title) }, [
-							E('span', { 'class': 'nav-ico sub', 'aria-hidden': 'true' }, [ '•' ]),
+							E('span', { 'class': 'nav-ico sub', 'aria-hidden': 'true' }, [ '🔸' ]),
 							E('span', { 'class': 'nav-txt' }, [ _(child2.title) ])
 						])
 					]));
