@@ -252,58 +252,44 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-nav>li>a {
 	display: flex;
 	color: #fff;
-	font-size: 14px;
+	font-size: 18px;
 	position: relative;
-	padding: 12px 15px;
-	min-height: 44px;
+	padding: 15px 15px;
+	min-height: 54px;
 	align-items: center;
 	transition: var(--transition)
 }
 
-.sidebar .side-nav>li>a::before {
-	content: "◆";
-	font-size: 14px;
-	margin-right: 12px;
-	opacity: 0.8;
-	width: 16px;
+/* fixed-width icon slot: never shrinks, so every title starts at the same x */
+.sidebar .side-nav>li>a .nav-ico,
+.sidebar .side-sub>li>a .nav-ico {
+	flex: 0 0 1.7em;
+	width: 1.7em;
 	text-align: center;
+	font-size: 16px;
+	line-height: 1;
+	margin-right: 8px;
+	opacity: .85;
 	transition: var(--transition)
 }
 
-.sidebar .side-nav>li.side-item-status>a::before {
-	content: "◈";
+.sidebar .side-sub>li>a .nav-ico {
+	font-size: 13px;
+	opacity: .5
 }
 
-.sidebar .side-nav>li.side-item-system>a::before {
-	content: "❖";
-}
-
-.sidebar .side-nav>li.side-item-network>a::before {
-	content: "🌐";
-	font-size: 12px;
-}
-
-.sidebar .side-nav>li.side-item-services>a::before {
-	content: "⚙";
-}
-
-.sidebar .side-nav>li.side-item-nas>a::before {
-	content: "💾";
-	font-size: 12px;
-}
-
-.sidebar .side-nav>li.side-item-vpn>a::before {
-	content: "🔒";
-	font-size: 12px;
-}
-
-.sidebar .side-nav>li.side-item-logout>a::before {
-	content: "⏻";
+.sidebar .side-nav>li>a .nav-txt,
+.sidebar .side-sub>li>a .nav-txt {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap
 }
 
 .sidebar .side-nav>li>a:hover {
 	background: rgba(255, 255, 255, 0.1);
-	padding-left: 18px
+	padding-left: 18px;
+	text-decoration: none;
 }
 
 .sidebar .side-nav>li.active>a {
@@ -312,7 +298,7 @@ body.tp-logo-mode .header-banner {
 	box-shadow: inset 4px 0 0 var(--tp-border);
 }
 
-.sidebar .side-nav>li.active>a::before {
+.sidebar .side-nav>li.active>a .nav-ico {
 	opacity: 1;
 	transform: scale(1.1);
 	color: var(--tp-border);
@@ -331,17 +317,9 @@ body.tp-logo-mode .header-banner {
 	display: flex;
 	align-items: center;
 	color: rgba(255, 255, 255, 0.8);
-	font-size: 13px;
-	padding: 10px 15px 10px 15px;
+	font-size: 14px;
+	padding: 11px 15px 11px 28px;
 	transition: var(--transition)
-}
-
-.sidebar .side-sub>li>a::before {
-	content: "•";
-	font-size: 16px;
-	margin-right: 10px;
-	opacity: 0.5;
-	line-height: 1;
 }
 
 .sidebar .side-sub>li>a:hover {
@@ -351,18 +329,12 @@ body.tp-logo-mode .header-banner {
 	color: #fff;
 }
 
-.sidebar .side-nav>li>a:hover {
-	background: rgba(255, 255, 255, 0.1);
-	padding-left: 18px;
-	text-decoration: none;
-}
-
 .sidebar .side-sub>li.active>a {
 	background: rgba(255, 255, 255, .12);
 	font-weight: 700
 }
 
-.sidebar .side-sub>li.active>a::before {
+.sidebar .side-sub>li.active>a .nav-ico {
 	opacity: 1
 }
 
@@ -1912,8 +1884,8 @@ a:hover {
 	}
 
 	.sidebar .side-nav>li>a {
-		padding: 11px 12px;
-		font-size: 14px;
+		padding: 12px 12px;
+		font-size: 16px;
 	}
 
 	.sidebar .side-sub {
@@ -1934,7 +1906,7 @@ a:hover {
 	}
 
 	.sidebar .side-sub>li>a {
-		font-size: 13px;
+		font-size: 14px;
 		padding: 10px 12px;
 	}
 

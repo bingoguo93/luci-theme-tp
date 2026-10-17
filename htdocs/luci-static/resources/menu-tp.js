@@ -54,6 +54,36 @@ return baseclass.extend({
 			this.renderTabMenu(activeNode, url + '/' + activeNode.name, level + 1);
 	},
 
+	navIcon(child) {
+		const byName = {
+			status: '◈', system: '❖', network: '🌐', services: '⚙',
+			nas: '💾', vpn: '🔒', logout: '⏻',
+			istore: '🛒', store: '🛒', modem: '📡'
+		};
+		const byTitle = [
+			[/调制解调|modem/i, '📡'],
+			[/iStore|应用|软件|插件/i, '🛒'],
+			[/退出|登出|logout/i, '⏻'],
+			[/状态|status/i, '◈'],
+			[/系统|system/i, '❖'],
+			[/网络|network/i, '🌐'],
+			[/服务|services/i, '⚙'],
+			[/存储|nas|硬盘/i, '💾'],
+			[/vpn|代理|加速/i, '🔒']
+		];
+
+		const named = byName[String(child.name || '').toLowerCase()];
+		if (named)
+			return named;
+
+		const title = String(child.title || '');
+		for (const [re, glyph] of byTitle)
+			if (re.test(title))
+				return glyph;
+
+		return '◆';
+	},
+
 	renderSideMenu(tree, url) {
 		const container = document.querySelector('#sidemenu');
 		const sidebar = document.querySelector('.sidebar');
@@ -80,7 +110,10 @@ return baseclass.extend({
 			const hasChildren = children2.length > 0;
 
 			const li = E('li', { 'class': (isActive ? 'active ' : '') + 'side-item-' + child.name }, [
-				E('a', { 'href': L.url(url, child.name) }, [ _(child.title) ])
+				E('a', { 'href': L.url(url, child.name), 'title': _(child.title) }, [
+					E('span', { 'class': 'nav-ico', 'aria-hidden': 'true' }, [ this.navIcon(child) ]),
+					E('span', { 'class': 'nav-txt' }, [ _(child.title) ])
+				])
 			]);
 
 			if (hasChildren && isActive) {
@@ -89,7 +122,10 @@ return baseclass.extend({
 					const subPath = (url + '/' + child.name + '/' + child2.name).replace(/^\/+/, '');
 					const isSubActive = currentPath == subPath;
 					subUl.appendChild(E('li', { 'class': (isSubActive ? 'active ' : '') + 'side-sub-item-' + child2.name }, [
-						E('a', { 'href': L.url(url, child.name, child2.name) }, [ _(child2.title) ])
+						E('a', { 'href': L.url(url, child.name, child2.name), 'title': _(child2.title) }, [
+							E('span', { 'class': 'nav-ico sub', 'aria-hidden': 'true' }, [ '•' ]),
+							E('span', { 'class': 'nav-txt' }, [ _(child2.title) ])
+						])
 					]));
 				});
 				li.appendChild(subUl);
