@@ -251,6 +251,8 @@ body.tp-logo-mode .header-banner {
 
 .sidebar .side-nav>li>a {
 	display: flex;
+	justify-content: flex-start;
+	text-align: left;
 	color: #fff;
 	font-size: 18px;
 	position: relative;
@@ -315,6 +317,8 @@ body.tp-logo-mode .header-banner {
 
 .sidebar .side-sub>li>a {
 	display: flex;
+	justify-content: flex-start;
+	text-align: left;
 	align-items: center;
 	color: rgba(255, 255, 255, 0.8);
 	font-size: 14px;
