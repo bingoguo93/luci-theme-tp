@@ -55,7 +55,8 @@ return baseclass.extend({
 	},
 
 	navIcon(child) {
-		const byName = {
+		try {
+			const byName = {
 			status: '◈', system: '❖', network: '🌐', services: '⚙',
 			nas: '💾', vpn: '🔒', logout: '⏻',
 			istore: '🛒', store: '🛒', modem: '📡'
@@ -81,7 +82,10 @@ return baseclass.extend({
 			if (re.test(title))
 				return glyph;
 
-		return '◆';
+			return '◆';
+		} catch (e) {
+			return '◆';
+		}
 	},
 
 	renderSideMenu(tree, url) {

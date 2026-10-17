@@ -9,6 +9,8 @@
 	import { getuid, getspnam } from 'luci.core';
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
+	/* bump when theme assets change: busts stale browser caches */
+	const theme_ver = '20261017.1';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
@@ -20,8 +22,8 @@
 		<title>{{ striptags(`${boardinfo.hostname ?? '?'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`) }}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="darkreader-lock">
-		<link rel="stylesheet" href="{{ media }}/cascade.css">
-		<link rel="icon" type="image/png" sizes="128x128" href="{{ media }}/imgs/favicon.png">
+		<link rel="stylesheet" href="{{ media }}/cascade.css?v={{ theme_ver }}">
+		<link rel="icon" type="image/png" sizes="128x128" href="{{ media }}/imgs/favicon.png?v={{ theme_ver }}">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
@@ -39,11 +41,11 @@
 				<div class="header-logo">
 					<a id="tp-brand" href="{{ dispatcher.build_url() }}">
 						<span class="tp-brand-hostname">{{ boardinfo.hostname ?? '?' }}</span>
-						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg" alt="TP-Link">
+						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg?v={{ theme_ver }}" alt="TP-Link">
 					</a>
 				</div>
 				<div class="header-banner">
-					<img data-src="{{ media }}/imgs/header.webp" alt="" width="2804" height="466" decoding="async">
+					<img data-src="{{ media }}/imgs/header.webp?v={{ theme_ver }}" alt="" width="2804" height="466" decoding="async">
 				</div>
 			</div>
 			<script>
