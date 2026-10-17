@@ -168,7 +168,8 @@ body.tp-logo-mode .header-logo {
 
 .header-logo a {
 	color: #fff;
-	font-size: 24px;
+	/* fluid brand text: scales with viewport instead of a fixed 24px */
+	font-size: clamp(18px, 1.1rem + 0.3vw, 24px);
 	font-weight: 900;
 	letter-spacing: -1px;
 	font-family: Arial, Helvetica, sans-serif;
@@ -189,7 +190,8 @@ body.tp-logo-mode .header-logo {
 
 .tp-brand-hostname {
 	display: block;
-	font-size: 20px;
+	/* fluid hostname text */
+	font-size: clamp(15px, 0.9rem + 0.2vw, 20px);
 	font-weight: 700;
 	letter-spacing: 0;
 	overflow: hidden;
@@ -221,19 +223,20 @@ body.tp-logo-mode .header-logo {
 	flex: 1;
 	display: none;
 	overflow: hidden;
-	background: var(--tp-blue-dark)
+	background: var(--tp-blue-dark);
+	/* ensure the banner stretches to fill the header-top height */
+	min-height: 100%;
 }
 
 body.tp-logo-mode .header-banner {
 	display: block
 }
 
-/* the banner is a 6:1 image: show it whole instead of cropping it into
-   a thin strip, anchored next to the brand area */
+/* fill the banner area entirely instead of letterboxing the 6:1 image */
 .header-banner img {
 	height: 100%;
 	width: 100%;
-	object-fit: contain;
+	object-fit: cover;
 	object-position: center
 }
 
@@ -1714,7 +1717,16 @@ a:hover {
 	   long item sets never push the indicators off-screen */
 	overflow-x: auto;
 	scrollbar-width: none;
-	min-width: 0
+	min-width: 0;
+	/* stop the menu bar growing wider than the viewport */
+	max-width: 100%
+}
+
+/* only top-level items belong in the top bar; nested submenus (e.g. the
+   "管理权/ACL" entry under "系統") stay in the sidebar and must not leak
+   into header-nav */
+#topmenu>li>ul {
+	display: none
 }
 
 #topmenu::-webkit-scrollbar {
