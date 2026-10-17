@@ -679,13 +679,15 @@ textarea {
 	height: calc(3em + 20px)
 }
 
+/* keep the placeholder cell in normal table flow: an absolute-positioned
+   cell drops out of the table layout entirely, which collapses column
+   widths and makes rows misalign. Center the text inside the cell
+   instead of floating it over the row. */
 .tr.placeholder>.td {
-	bottom: 0;
-	left: 0;
 	line-height: 3em;
-	position: absolute;
-	right: 0;
-	text-align: center
+	text-align: center;
+	color: var(--tp-text-light);
+	font-style: italic
 }
 
 .tr.drag-over-above,
