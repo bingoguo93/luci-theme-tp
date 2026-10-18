@@ -152,18 +152,17 @@ header {
 .header-logo {
 	/* track the sidebar width variable but never let the logo column
 	   shrink below the smallest readable size on any device */
-	width: clamp(88px, var(--sidebar-width), var(--sidebar-width));
-	flex: 0 0 clamp(88px, var(--sidebar-width), var(--sidebar-width));
+	width: var(--sidebar-width);
+	flex: 0 0 var(--sidebar-width);
 	background: var(--tp-blue-dark);
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	padding-left: 15px;
 	border-right: 0
 }
 
 body.tp-logo-mode .header-logo {
-	border-right: 6px solid #fff
+	border-right: 15px solid var(--tp-blue-dark)
 }
 
 .header-logo a {
@@ -176,11 +175,13 @@ body.tp-logo-mode .header-logo {
 	text-align: left;
 	user-select: none;
 	width: 100%;
+	padding-left: 15px;
 	transition: var(--transition);
 	min-height: auto;
 	min-width: auto;
 	display: flex;
 	align-items: center;
+	justify-content: flex-start
 }
 
 .header-logo a:hover {
