@@ -9,6 +9,8 @@
 	import { getuid, getspnam } from 'luci.core';
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
+	/* bump when theme assets change: busts stale browser caches */
+	const theme_ver = '20261018.3';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
@@ -20,8 +22,8 @@
 		<title>{{ striptags(`${boardinfo.hostname ?? '?'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`) }}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="darkreader-lock">
-		<link rel="stylesheet" href="{{ media }}/cascade.css">
-		<link rel="icon" href="{{ media }}/imgs/header.png" sizes="any">
+		<link rel="stylesheet" href="{{ media }}/cascade.css?v={{ theme_ver }}">
+		<link rel="icon" type="image/png" sizes="128x128" href="{{ media }}/imgs/favicon.png?v={{ theme_ver }}">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
@@ -38,34 +40,52 @@
 			<div class="header-top">
 				<div class="header-logo">
 					<a id="tp-brand" href="{{ dispatcher.build_url() }}">
-						<span class="tp-brand-hostname">{{ boardinfo.hostname ?? '?' }}</span>
-						<img class="tp-brand-logo" src="{{ media }}/imgs/logo.svg" alt="TP-Link">
+						<span class="tp-brand-hostname">{{ entityencode(boardinfo.hostname ?? '?', true) }}</span>
+						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg?v={{ theme_ver }}" alt="TP-Link">
 					</a>
 				</div>
 				<div class="header-banner">
-					<img src="{{ media }}/imgs/header.png" alt="TP-Link">
+					<img data-src="{{ media }}/imgs/header.webp?v={{ theme_ver }}" alt="" width="2804" height="466" decoding="async">
 				</div>
 			</div>
 			<script>
 				(function() {
 					var brand = document.getElementById('tp-brand');
+					var logo = brand ? brand.querySelector('.tp-brand-logo') : null;
+					var banner = document.querySelector('.header-banner img');
 					var key = 'luci-theme-tp-brand-logo';
 
 					if (!brand)
 						return;
 
-					if (window.localStorage && localStorage.getItem(key) === '1')
-						brand.classList.add('logo-mode');
+					function applyLogoMode(on) {
+						brand.classList.toggle('logo-mode', on);
+						document.body.classList.toggle('tp-logo-mode', on);
 
-					document.body.classList.toggle('tp-logo-mode', brand.classList.contains('logo-mode'));
+						/* both images are display:none by default - only fetch them when needed */
+						if (on) {
+							[ logo, banner ].forEach(function(img) {
+								if (img && !img.src)
+									img.src = img.getAttribute('data-src');
+							});
+						}
+					}
+
+					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');
 
 					brand.addEventListener('click', function(ev) {
+						/* modified clicks keep their normal link behaviour
+						   (open in new tab/window) instead of toggling */
+						if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey || ev.button)
+							return;
+
 						ev.preventDefault();
-						brand.classList.toggle('logo-mode');
-						document.body.classList.toggle('tp-logo-mode', brand.classList.contains('logo-mode'));
+
+						var on = !brand.classList.contains('logo-mode');
+						applyLogoMode(on);
 
 						if (window.localStorage) {
-							if (brand.classList.contains('logo-mode'))
+							if (on)
 								localStorage.setItem(key, '1');
 							else
 								localStorage.removeItem(key);
@@ -73,17 +93,29 @@
 					});
 				})();
 			</script>
-			<div class="header-nav">
+			<nav class="header-nav" aria-label="{{ _('Main navigation') }}">
 				<ul class="nav" id="topmenu" style="display:none"></ul>
-				<div id="indicators" class="header-indicators" style="display:none"></div>
-			</div>
+				<div id="indicators" class="header-indicators">
+					<div class="indicator-item" id="temp-indicator" style="display:none">
+						<i>{{ _('CPU:') }}</i> <span id="temp-value" class="indicator-temp">--</span>°C
+					</div>
+				</div>
+			</nav>
+			<script>
+				/* temperature polling lives in temp-tp.js so the browser can cache it;
+				   the logo-mode script above stays inline to avoid FOUC.
+				   If the module cannot be loaded the indicator simply stays hidden. */
+				try {
+					Promise.resolve(L.require('temp-tp')).catch(function() {});
+				} catch (e) {}
+			</script>
 		</header>
 
 		<div class="page-wrapper">
-			<aside class="sidebar" id="sidebar">
+			<aside class="sidebar" id="sidebar" role="navigation" aria-label="{{ _('Sidebar navigation') }}">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
-					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">更多 TP-LINK 产品，</br>请点击查看 >>...</a>
+					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">{{ _('更多 TP-LINK 产品，') }}<br>{{ _('请点击查看 >>...') }}</a>
 				</div>
 			</aside>
 

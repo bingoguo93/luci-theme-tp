@@ -2,10 +2,10 @@
 	--tp-blue-dark: #004B91;
 	--tp-blue: #005696;
 	--tp-blue-light: #7DA7EB;
-	--tp-header-bg: #004B91;
 	--tp-sidebar-bg: #004B91;
 	--tp-content-bg: #FFF;
 	--tp-body-bg: #FFF;
+	--tp-section-bg: #EEE;
 	--tp-border: #FCB143;
 	--tp-border-light: #B8C8D8;
 	--tp-text: #000;
@@ -13,10 +13,69 @@
 	--tp-link: #004B91;
 	--tp-input-border: #7F9DB9;
 	--tp-table-header-bg: #F2F2F2;
+	--tp-title: #004B91;
 	--font-sans: Verdana, Arial, Helvetica, sans-serif;
 	--sidebar-width: 180px;
-	--main-width: 800px;
-	color-scheme: light
+	--main-max-width: 100%;
+	--content-padding: 20px 40px;
+	/* explicit property list instead of `all`: every state change in this
+	   theme animates only these properties, and `all` would needlessly run
+	   the transition machinery on unrelated property changes (e.g. layout
+	   updates from JS) */
+	--transition: background-color .2s ease-in-out, border-color .2s ease-in-out, box-shadow .2s ease-in-out, color .2s ease-in-out, filter .2s ease-in-out, font-weight .2s ease-in-out, margin .2s ease-in-out, opacity .2s ease-in-out, padding .2s ease-in-out, transform .2s ease-in-out;
+	--tp-alert-warn-bg: #fff8e8;
+	--tp-alert-warn-text: #7a4a00;
+	--tp-alert-err-bg: #fff5f5;
+	--tp-alert-err-text: #900;
+	--tp-alert-succ-bg: #f1fff1;
+	--tp-alert-succ-text: #060;
+	color-scheme: light dark
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--tp-content-bg: #1e1e1e;
+		--tp-body-bg: #121212;
+		--tp-section-bg: #2d2d2d;
+		--tp-border: #d48b1d;
+		--tp-border-light: #444;
+		--tp-text: #e0e0e0;
+		--tp-text-light: #aaa;
+		--tp-link: #6baaff;
+		--tp-input-border: #555;
+		--tp-table-header-bg: #333;
+		--tp-blue-light: #3a5a8a;
+		--tp-title: #7DA7EB;
+		--tp-alert-warn-bg: #332b00;
+		--tp-alert-warn-text: #ffd666;
+		--tp-alert-err-bg: #2d0000;
+		--tp-alert-err-text: #ffccc7;
+		--tp-alert-succ-bg: #002300;
+		--tp-alert-succ-text: #b7eb8f;
+	}
+
+	img {
+		filter: brightness(0.8) contrast(1.1);
+	}
+
+	/* keep the brand logo and small UI icons unfiltered: the filter is
+	   meant for content images/photos, and dimming icons hurts legibility */
+	.tp-brand-logo,
+	.ifacebox img,
+	.ifacebadge img,
+	.cbi-dropdown img {
+		filter: none
+	}
+
+	.header-banner img {
+		filter: brightness(0.7);
+	}
+
+	/* the login backdrop is a fixed light blue that clashes with the
+	   dark login card; follow the dark palette like everything else */
+	#modal_overlay.login-overlay {
+		background: var(--tp-body-bg);
+	}
 }
 
 *,
@@ -28,14 +87,17 @@
 }
 
 html {
-	font-size: 100%;
+	/* fluid root font: scales smoothly with the viewport so all em/rem based
+	   sizes (sidebar items, buttons, table cells, …) adapt without extra
+	   media queries. 16px at ≥1440px, ~13px at 360px. */
+	font-size: clamp(13px, 0.72rem + 0.3vw, 16px);
 	height: 100%
 }
 
 body {
 	background-color: var(--tp-body-bg);
 	font-family: var(--font-sans);
-	font-size: 10px;
+	font-size: 0.875rem;
 	color: var(--tp-text);
 	min-height: 100%;
 	display: flex;
@@ -45,55 +107,92 @@ body {
 
 a {
 	color: var(--tp-link);
-	text-decoration: none
+	text-decoration: none;
+	transition: var(--transition);
+	min-height: 44px;
+	min-width: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* keyboard focus must stay visible: an accent-coloured outline for links,
+   buttons and inputs, scoped to :focus-visible so plain mouse clicks keep
+   the default look without a focus ring */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+	outline: 2px solid var(--tp-border, #FCB143);
+	outline-offset: 2px
 }
 
 header {
 	background: var(--tp-sidebar-bg);
 	flex-shrink: 0;
-	width: var(--main-width);
+	width: 100%;
+	max-width: var(--main-max-width);
 	margin: 0 auto;
 	padding: 0
-}
-
-body.tp-logo-mode header {
-	margin-bottom: 6px
 }
 
 .header-top {
 	width: 100%;
 	display: flex;
 	align-items: stretch;
-	height: 80px
+	background: var(--tp-sidebar-bg);
+	/* scale the top bar with the fluid root font so it stays compact on
+	   small screens and tall on wide ones; clamp the extremes */
+	height: clamp(56px, 6vw, 80px);
+	min-height: 48px
 }
 
 .header-logo {
+	/* track the sidebar width variable but never let the logo column
+	   shrink below the smallest readable size on any device */
 	width: var(--sidebar-width);
+	flex: 0 0 var(--sidebar-width);
 	background: var(--tp-blue-dark);
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	border-right: 0
 }
 
 body.tp-logo-mode .header-logo {
-	border-right: 6px solid #fff
+	border-right: 15px solid var(--tp-blue-dark)
 }
 
 .header-logo a {
 	color: #fff;
-	font-size: 28px;
+	/* fluid brand text: scales with viewport instead of a fixed 24px */
+	font-size: clamp(18px, 1.1rem + 0.3vw, 24px);
 	font-weight: 900;
 	letter-spacing: -1px;
 	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;
+	text-align: left;
 	user-select: none;
-	width: 100%
+	width: 100%;
+	padding-left: 15px;
+	transition: var(--transition);
+	min-height: auto;
+	min-width: auto;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start
+}
+
+.header-logo a:hover {
+	transform: scale(1.05);
+	opacity: 0.9;
 }
 
 .tp-brand-hostname {
 	display: block;
-	font-size: 28px;
+	/* fluid hostname text */
+	font-size: clamp(18px, 1.15rem + 0.45vw, 24px);
 	font-weight: 700;
 	letter-spacing: 0;
 	overflow: hidden;
@@ -104,8 +203,11 @@ body.tp-logo-mode .header-logo {
 
 .tp-brand-logo {
 	display: none;
-	height: 160px;
-	width: auto
+	height: auto;
+	width: auto;
+	max-height: 100%;
+	max-width: 100%;
+	object-fit: contain
 }
 
 .header-logo a.logo-mode .tp-brand-hostname {
@@ -113,36 +215,45 @@ body.tp-logo-mode .header-logo {
 }
 
 .header-logo a.logo-mode .tp-brand-logo {
-	display: inline-block
+	display: inline-block;
+	/* the logo is nominally 160px tall but the header-top is only 80px
+	   (60px on phones): the max-height/max-width rules above keep it
+	   contained; object-fit:contain preserves the aspect ratio */
 }
 
 .header-banner {
 	flex: 1;
 	display: none;
 	overflow: hidden;
-	background: var(--tp-blue-dark)
+	background: var(--tp-blue-dark);
+	/* ensure the banner stretches to fill the header-top height */
+	min-height: 100%;
 }
 
 body.tp-logo-mode .header-banner {
 	display: block
 }
 
+/* the banner asset is pre-stretched to 26:1 with mirrored background, so
+   cover fills the strip edge to edge without cropping any content */
 .header-banner img {
 	height: 100%;
 	width: 100%;
-	object-fit: cover
+	object-fit: cover;
+	object-position: center
 }
 
 .page-wrapper {
 	display: flex;
-	width: var(--main-width);
+	width: 100%;
+	max-width: var(--main-max-width);
 	flex: 1;
 	background: var(--tp-blue-dark);
 	margin: 0 auto
 }
 
 .sidebar {
-	width: 132px;
+	width: var(--sidebar-width);
 	flex-shrink: 0;
 	background: var(--tp-sidebar-bg);
 	display: flex;
@@ -153,48 +264,101 @@ body.tp-logo-mode .header-banner {
 .sidebar .side-nav {
 	list-style: none;
 	flex: 1;
-	padding: 10px 0
+	padding: 0;
+	margin: 0
 }
 
 .sidebar .side-nav>li>a {
-	display: block;
+	display: flex;
+	justify-content: flex-start;
+	text-align: left;
 	color: #fff;
-	font-size: 10px;
+	font-size: 18px;
 	position: relative;
-	padding: 8px 15px
+	padding: 15px 15px;
+	min-height: 54px;
+	align-items: center;
+	transition: var(--transition)
 }
 
-.sidebar .side-nav>li>a::before {
-	content: "◆";
-	font-size: 8px;
-	margin-right: 6px;
-	vertical-align: middle
+/* fixed-width icon slot: never shrinks, so every title starts at the same x */
+.sidebar .side-nav>li>a .nav-ico,
+.sidebar .side-sub>li>a .nav-ico {
+	flex: 0 0 1.7em;
+	width: 1.7em;
+	text-align: center;
+	font-size: 16px;
+	line-height: 1;
+	margin-right: 8px;
+	opacity: .85;
+	transition: var(--transition)
+}
+
+.sidebar .side-sub>li>a .nav-ico {
+	font-size: 13px;
+	opacity: .5
+}
+
+.sidebar .side-nav>li>a .nav-txt,
+.sidebar .side-sub>li>a .nav-txt {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap
+}
+
+.sidebar .side-nav>li>a:hover {
+	background: rgba(255, 255, 255, 0.1);
+	padding-left: 18px;
+	text-decoration: none;
 }
 
 .sidebar .side-nav>li.active>a {
 	font-weight: 700;
-	background: transparent
+	background: rgba(255, 255, 255, 0.15);
+	box-shadow: inset 4px 0 0 var(--tp-border);
 }
 
-.sidebar .side-nav>li.active>a::before {
-	content: "▼";
-	font-size: 8px
+.sidebar .side-nav>li.active>a .nav-ico {
+	opacity: 1;
+	transform: scale(1.1);
+	color: var(--tp-border);
 }
 
 .sidebar .side-sub {
-	list-style: none
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	background: rgba(0, 0, 0, 0.2);
+	border-left: 2px solid rgba(255, 255, 255, 0.05);
+	margin-left: 20px;
 }
 
 .sidebar .side-sub>li>a {
-	display: block;
-	color: #fff;
-	font-size: 10px;
-	padding: 6px 15px 6px 26px;
+	display: flex;
+	justify-content: flex-start;
+	text-align: left;
+	align-items: center;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 14px;
+	padding: 11px 15px 11px 28px;
+	transition: var(--transition)
 }
 
-.sidebar .side-sub>li>a::before {
-	content: "●";
-	margin-right: 6px;
+.sidebar .side-sub>li>a:hover {
+	background: rgba(255, 255, 255, .08);
+	padding-left: 20px;
+	text-decoration: none;
+	color: #fff;
+}
+
+.sidebar .side-sub>li.active>a {
+	background: rgba(255, 255, 255, .12);
+	font-weight: 700
+}
+
+.sidebar .side-sub>li.active>a .nav-ico {
+	opacity: 1
 }
 
 .sidebar-footer {
@@ -209,7 +373,7 @@ body.tp-logo-mode .sidebar-footer {
 .sidebar-footer a {
 	display: block;
 	color: #fff;
-	font-size: 10px;
+	font-size: 13px;
 	margin-bottom: 8px
 }
 
@@ -230,12 +394,12 @@ body.tp-logo-mode .sidebar-footer {
 .content-margin {
 	flex: 1;
 	min-width: 0;
-	background: #fff;
+	background: var(--tp-content-bg);
 	display: flex;
 	flex-direction: column;
-	border-radius: 28px;
-	margin: 14px;
-	padding: 20px 80px;
+	border-radius: 0;
+	margin: 0;
+	padding: var(--content-padding);
 }
 
 .tp-section-box {
@@ -251,7 +415,7 @@ body.tp-logo-mode .sidebar-footer {
 .cbi-section {
 	flex: 1;
 	min-width: 0;
-	background: #eee
+	background: var(--tp-section-bg)
 }
 
 h1,
@@ -259,29 +423,29 @@ h2,
 .cbi-map-title {
 	background: var(--tp-blue-light);
 	color: #fff;
-	font-size: 12px;
+	font-size: 15px;
 	font-weight: 500;
 	border-bottom: 1px solid var(--tp-border);
 	margin: 0;
-	padding: 6px
+	padding: 10px
 }
 
 .cbi-map-descr,
 .cbi-section-descr {
 	font-size: 11px;
-	color: #000;
-	background: #fff;
-	border-bottom: 1px solid #eee;
+	color: var(--tp-text);
+	background: var(--tp-content-bg);
+	border-bottom: 1px solid var(--tp-section-bg);
 	margin: 0;
 	padding: 10px 15px
 }
 
 h3,
 legend {
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: 700;
-	color: var(--tp-blue-dark);
-	margin: 8px;
+	color: var(--tp-title);
+	margin: 10px 8px;
 }
 
 .cbi-value {
@@ -295,7 +459,8 @@ legend {
 	flex: 0 0 180px;
 	text-align: right;
 	padding-right: 15px;
-	font-weight: 400
+	font-weight: 400;
+	color: var(--tp-text);
 }
 
 .cbi-value-field {
@@ -304,17 +469,22 @@ legend {
 
 input[type="text"],
 input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
 select,
 textarea,
 .cbi-select,
 .cbi-dropdown:not(.btn):not(.cbi-button) {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-input-border);
 	color: var(--tp-text);
 	display: inline-block;
-	height: 22px;
-	font-size: 11px;
-	padding: 2px 4px;
+	height: 28px;
+	font-size: 13px;
+	padding: 4px 6px;
 	box-shadow: 1px 1px 0 #777;
 }
 
@@ -331,7 +501,7 @@ textarea {
 .cbi-dropdown:not(.btn):not(.cbi-button),
 .cbi-dynlist {
 	min-width: 180px;
-	max-width: 400px;
+	max-width: 100%;
 	width: auto
 }
 
@@ -376,7 +546,7 @@ textarea {
 }
 
 .cbi-dynlist>.item {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-input-border);
 	color: var(--tp-text);
 	cursor: move;
@@ -432,11 +602,21 @@ textarea {
 
 .td>input[type=text],
 .td>input[type=password],
+.td>input[type=email],
+.td>input[type=number],
+.td>input[type=search],
+.td>input[type=tel],
+.td>input[type=url],
 .td>select,
 .td>.cbi-dropdown:not(.btn):not(.cbi-button),
 .cbi-dynlist>.add-item>.cbi-dropdown,
 .table.cbi-section-table input[type="password"],
 .table.cbi-section-table input[type="text"],
+.table.cbi-section-table input[type="email"],
+.table.cbi-section-table input[type="number"],
+.table.cbi-section-table input[type="search"],
+.table.cbi-section-table input[type="tel"],
+.table.cbi-section-table input[type="url"],
 .table.cbi-section-table textarea,
 .table.cbi-section-table select,
 .table.cbi-section-table .cbi-select {
@@ -453,8 +633,8 @@ textarea {
 
 .cbi-value-description {
 	color: var(--tp-text-light);
-	font-size: 11px;
-	margin: 3px 0 0
+	font-size: 13px;
+	margin: 5px 0 0
 }
 
 .cbi-section-error {
@@ -474,16 +654,16 @@ textarea {
 	width: max-content;
 	min-width: 100%;
 	border-collapse: collapse;
-	color: var(--tp-blue-dark);
+	color: var(--tp-text);
 	margin: 10px 0
 }
 
 .table .th,
 .table .td {
 	display: table-cell;
-	font-size: 10px;
-	line-height: 16px;
-	padding: 4px 8px;
+	font-size: 13px;
+	line-height: 20px;
+	padding: 8px 10px;
 	vertical-align: middle
 }
 
@@ -491,7 +671,7 @@ textarea {
 	background: var(--tp-table-header-bg);
 	font-weight: 700;
 	text-align: center;
-	color: var(--tp-blue-dark)
+	color: var(--tp-title)
 }
 
 .tr {
@@ -502,13 +682,15 @@ textarea {
 	height: calc(3em + 20px)
 }
 
+/* keep the placeholder cell in normal table flow: an absolute-positioned
+   cell drops out of the table layout entirely, which collapses column
+   widths and makes rows misalign. Center the text inside the cell
+   instead of floating it over the row. */
 .tr.placeholder>.td {
-	bottom: 0;
-	left: 0;
 	line-height: 3em;
-	position: absolute;
-	right: 0;
-	text-align: center
+	text-align: center;
+	color: var(--tp-text-light);
+	font-style: italic
 }
 
 .tr.drag-over-above,
@@ -554,18 +736,21 @@ textarea {
 	border: 1px solid #56507b;
 	color: var(--tp-text);
 	display: inline-block;
-	font-size: 10px;
+	font-size: 13px;
 	cursor: pointer;
-	line-height: 20px;
+	line-height: 24px;
 	box-shadow: 1px 1px 0 #777;
-	padding: 0px 6px;
-	vertical-align: middle
+	padding: 2px 10px;
+	vertical-align: middle;
+	transition: var(--transition);
+	border-radius: 4px;
 }
 
 .btn:hover,
 .cbi-button:hover {
 	background: linear-gradient(#fff, #d8d7ee);
-	text-decoration: none
+	text-decoration: none;
+	filter: brightness(1.05);
 }
 
 .btn:active,
@@ -575,16 +760,16 @@ textarea {
 }
 
 footer {
-	background: #fff;
-	border-top: 1px solid #ccc;
-	font-size: 10px;
-	color: #666;
+	background: var(--tp-content-bg);
+	border-top: 1px solid var(--tp-border-light);
+	font-size: 12px;
+	color: var(--tp-text-light);
 	display: flex;
-	width: calc(100% - var(--page-gap) * 2);
+	width: 100%;
 	max-width: var(--main-max-width);
 	justify-content: space-between;
 	margin: 0 auto;
-	padding: 10px 20px
+	padding: 15px 20px
 }
 
 .cbi-page-actions {
@@ -622,7 +807,7 @@ footer {
 
 .tabs,
 .cbi-tabmenu {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border-bottom: 1px solid var(--tp-blue);
 	display: flex;
 	flex-wrap: wrap;
@@ -633,36 +818,54 @@ footer {
 .tabs>li,
 .cbi-tabmenu>li {
 	align-items: center;
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-blue);
 	border-bottom: 0;
 	color: var(--tp-blue-dark);
 	cursor: pointer;
 	display: flex;
 	flex: 0 1 auto;
-	height: 25px;
+	height: 30px;
 	margin: 4px 2px 0;
-	max-width: 48%
+	max-width: 48%;
+	transition: var(--transition);
+	border-radius: 4px 4px 0 0;
+}
+
+.tabs>li:hover,
+.cbi-tabmenu>li:hover {
+	background: var(--tp-blue-light);
+	color: #fff;
 }
 
 .tabs>li>a,
 .cbi-tabmenu>li>a {
 	color: inherit;
 	display: block;
-	line-height: 25px;
+	line-height: 30px;
 	outline: none;
 	overflow: hidden;
-	padding: 0 8px;
+	padding: 0 12px;
 	text-decoration: none;
 	text-overflow: ellipsis;
 	white-space: nowrap
 }
 
+/* the cbi-select and the tab strips suppress outlines for mouse focus;
+   give keyboard focus its ring back. Drawn inside (-2px) so the clipped
+   tab strip cannot cut it off */
+.cbi-select select:focus-visible,
+.tabs>li>a:focus-visible,
+.cbi-tabmenu>li>a:focus-visible {
+	outline: 2px solid var(--tp-border, #FCB143);
+	outline-offset: -2px
+}
+
 .tabs>li.active,
 .cbi-tabmenu>li.active,
 .cbi-tabmenu>li.cbi-tab {
-	background: #fff;
-	border-bottom-color: #fff;
+	background: var(--tp-content-bg);
+	border-bottom-color: var(--tp-content-bg);
 	margin-bottom: -1px;
 	font-weight: 700
 }
@@ -687,11 +890,11 @@ footer {
 	color: #fff;
 	content: attr(data-errors);
 	display: inline-flex;
-	font-size: 10px;
-	height: 14px;
+	font-size: 11px;
+	height: 16px;
 	justify-content: center;
 	margin-right: 5px;
-	min-width: 14px;
+	min-width: 16px;
 	padding: 0 3px
 }
 
@@ -725,7 +928,7 @@ footer {
 }
 
 .ifacebox {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-border-light);
 	color: var(--tp-blue-dark);
 	display: inline-flex;
@@ -767,7 +970,7 @@ footer {
 }
 
 .ifacebadge {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-border-light);
 	color: var(--tp-blue-dark);
 	cursor: default;
@@ -817,7 +1020,8 @@ footer {
 .network-status-table .ifacebox-body>div {
 	display: flex;
 	flex-wrap: wrap;
-	margin: -.125em
+	margin: -.125em;
+	min-height: 1.2em;
 }
 
 #dsl_status_table .ifacebox-body span>strong {
@@ -895,7 +1099,6 @@ footer {
 	list-style: none;
 	margin: 0 !important;
 	overflow: hidden;
-	/* padding: 0 8px; */
 	width: 100%
 }
 
@@ -988,7 +1191,7 @@ footer {
 }
 
 .cbi-dropdown[open]>ul.dropdown {
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-input-border);
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, .2);
 	display: block;
@@ -1087,21 +1290,21 @@ footer {
 
 .alert-message.error,
 .alert-message.danger {
-	background: #fff5f5;
+	background: var(--tp-alert-err-bg);
 	border-color: #c00;
-	color: #900
+	color: var(--tp-alert-err-text)
 }
 
 .alert-message.warning {
-	background: #fff8e8;
+	background: var(--tp-alert-warn-bg);
 	border-color: var(--tp-border);
-	color: #7a4a00
+	color: var(--tp-alert-warn-text)
 }
 
 .alert-message.success {
-	background: #f1fff1;
+	background: var(--tp-alert-succ-bg);
 	border-color: #6c6;
-	color: #060
+	color: var(--tp-alert-succ-text)
 }
 
 .alert-message.info,
@@ -1129,10 +1332,11 @@ footer {
 	background: #eee;
 	color: var(--tp-text);
 	display: inline-block;
-	font-size: 10px;
+	font-size: 11px;
 	font-weight: 700;
-	padding: 2px 4px;
-	white-space: nowrap
+	padding: 2px 6px;
+	white-space: nowrap;
+	border-radius: 2px;
 }
 
 .label.important,
@@ -1212,6 +1416,7 @@ footer {
 
 body.modal-overlay-active {
 	height: 100vh;
+	height: 100dvh;
 	overflow: hidden
 }
 
@@ -1227,7 +1432,7 @@ body.modal-overlay-active #modal_overlay {
 	min-width: 270px;
 	max-width: 600px;
 	min-height: 32px;
-	background: #fff;
+	background: var(--tp-content-bg);
 	border: 1px solid var(--tp-border);
 	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 	margin: 5em auto;
@@ -1490,10 +1695,426 @@ body.modal-overlay-active #modal_overlay {
 	text-align: right
 }
 
-a:hover,
-.sidebar .side-sub>li>a:hover {
+a:hover {
 	text-decoration: underline
 }
+
+.header-nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* let the nav and indicators wrap to a second row on narrow viewports
+	   instead of being squeezed together; gap keeps the rows separated */
+	flex-wrap: wrap;
+	gap: 0 12px;
+	padding: 0 20px;
+	background: var(--tp-blue-dark);
+}
+
+/* the top menu is horizontal on every viewport; without these base rules
+   the entries stacked vertically on desktop (only the small-screen blocks
+   below ever set a layout). The responsive blocks just tune density. */
+#topmenu {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0 8px;
+	/* allow horizontal scrolling inside the menu on small screens so
+	   long item sets never push the indicators off-screen */
+	overflow-x: auto;
+	scrollbar-width: none;
+	min-width: 0;
+	/* stop the menu bar growing wider than the viewport */
+	max-width: 100%
+}
+
+/* only top-level items belong in the top bar; nested submenus (e.g. the
+   "管理权/ACL" entry under "系統") stay in the sidebar and must not leak
+   into header-nav */
+#topmenu>li>ul {
+	display: none
+}
+
+#topmenu::-webkit-scrollbar {
+	display: none
+}
+
+#topmenu li {
+	flex: 0 0 auto;
+}
+
+#topmenu li a {
+	color: #fff;
+	padding: 0 14px;
+	line-height: 44px;
+	font-size: 15px;
+	opacity: 0.85;
+}
+
+#topmenu li a:hover {
+	opacity: 1;
+}
+
+#topmenu li.active a {
+	opacity: 1;
+	font-weight: 700;
+	box-shadow: inset 0 -3px 0 #fff;
+}
+
+.header-indicators {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	color: #fff;
+	font-size: 13px;
+}
+
+.indicator-item {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.indicator-item i {
+	font-style: normal;
+	opacity: 0.8;
+}
+
+.indicator-temp.warn {
+	color: #ffcc00;
+	font-weight: bold;
+}
+
+.indicator-temp.danger {
+	color: #ff4d4f;
+	font-weight: bold;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 800px) {
+	:root {
+		--content-padding: 15px;
+		--sidebar-width: 150px;
+	}
+
+	.header-logo {
+		width: 100px;
+		flex: 0 0 100px;
+	}
+
+	.tp-brand-hostname {
+		font-size: 1.125rem;
+	}
+
+	.cbi-value {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.cbi-value-title {
+		flex: none;
+		width: 100%;
+		text-align: left;
+		padding: 0 0 4px;
+	}
+
+	.cbi-value-field {
+		width: 100%;
+	}
+
+	.cbi-value-description {
+		margin-top: 4px;
+	}
+
+	footer {
+		flex-direction: column;
+		text-align: center;
+		gap: 8px;
+	}
+
+	.footer-right {
+		text-align: center;
+	}
+
+	.table {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+	}
+
+	.header-nav {
+		display: flex;
+		flex-wrap: wrap;
+		background: var(--tp-blue-dark);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		padding: 0 10px;
+	}
+
+	#topmenu {
+		flex: 1;
+		list-style: none;
+		overflow-x: auto;
+		height: 2.5rem;
+		align-items: center;
+		scrollbar-width: none;
+	}
+
+	/* only override the inline display:none once menu-tp.js has filled
+	   the list: without this an empty 40px row shows on every page load
+	   (and stays when a menu level has no entries). Browsers without
+	   :not(:empty) fall back to the inline display switch as before. */
+	#topmenu:not(:empty) {
+		display: flex !important;
+	}
+
+	.header-indicators {
+		padding: 0 10px;
+		height: 2.5rem;
+		font-size: 0.8rem;
+	}
+
+	#topmenu::-webkit-scrollbar {
+		display: none;
+	}
+
+	#topmenu li {
+		flex: 0 0 auto;
+	}
+
+	#topmenu li a {
+		color: #fff;
+		padding: 0 12px;
+		line-height: 2.5rem;
+		display: block;
+		font-size: 0.9rem;
+		opacity: 0.8;
+	}
+
+	#topmenu li.active a {
+		opacity: 1;
+		font-weight: 700;
+		box-shadow: inset 0 -3px 0 #fff;
+	}
+
+	/* form controls need >= 16px text or iOS Safari zooms the page on focus */
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="number"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="url"],
+	select,
+	textarea,
+	.cbi-select,
+	.cbi-dropdown:not(.btn):not(.cbi-button) {
+		font-size: 16px;
+	}
+
+	/* long tab rows scroll sideways instead of wrapping into tall stacks */
+	.tabs,
+	.cbi-tabmenu {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+	}
+
+	.tabs>li,
+	.cbi-tabmenu>li {
+		flex: 0 0 auto;
+		height: 38px;
+	}
+
+	.tabs>li>a,
+	.cbi-tabmenu>li>a {
+		line-height: 36px;
+	}
+
+	/* larger checkboxes and radios are easier to hit with a finger */
+	input[type="checkbox"],
+	input[type="radio"] {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* dialogs waste less vertical space on phones */
+	.modal {
+		margin: 1.5em auto;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.page-wrapper {
+		flex-direction: column;
+	}
+
+	.sidebar {
+		width: 100%;
+		height: auto;
+		max-height: none;
+		border-bottom: 1px solid var(--tp-border);
+	}
+
+	/* IMPORTANT: keep the top-level list as a vertical (block) column,
+	   NOT display:flex + flex-wrap. When it was flex, a parent <li>
+	   containing a nested .side-sub submenu got squeezed into the same
+	   50% grid slot as its siblings, and the submenu items (e.g. the
+	   "管理权/ACL" entry under "系统") visually escaped into the outer
+	   navigation area - showing up as a stray duplicate in the top bar.
+	   Block layout keeps the submenu as a nested child inside its parent
+	   item, so it only appears once, indented under the active entry. */
+	.sidebar .side-nav {
+		display: block;
+		padding: 4px 0;
+	}
+
+	.sidebar .side-nav>li {
+		display: block;
+		width: 100%;
+	}
+
+	.sidebar .side-nav>li>a {
+		padding: 10px 14px;
+		font-size: 0.95rem;
+	}
+
+	/* submenus stay as a nested column under their active parent,
+	   spanning the full width of the now-vertical sidebar */
+	.sidebar .side-sub {
+		display: block;
+		position: relative;
+		background: rgba(0, 0, 0, 0.18);
+		z-index: 1;
+		width: 100%;
+		margin: 0;
+		padding: 4px 0 4px 20px;
+		border-left: 3px solid var(--tp-border);
+		border-radius: 0;
+	}
+
+	.sidebar .side-sub>li>a {
+		font-size: 0.85rem;
+		padding: 8px 14px;
+	}
+
+	.header-top {
+		/* shrink the header bar on phones; clamp keeps it sensible on
+		   very small (360px) screens */
+		height: clamp(48px, 10vw, 60px);
+	}
+
+	.header-logo {
+		width: 80px;
+		flex: 0 0 80px;
+	}
+
+	.header-nav {
+		flex-direction: column;
+		align-items: stretch;
+		padding: 0;
+		gap: 0;
+	}
+
+	#topmenu {
+		flex: 1;
+		width: 100%;
+		order: 1;
+	}
+
+	.header-indicators {
+		order: 2;
+		width: 100%;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.2);
+		padding: 6px 10px;
+		height: auto;
+		gap: 10px;
+		font-size: 0.85rem;
+	}
+
+	.indicator-item {
+		padding: 2px 0;
+	}
+
+	:root {
+		--content-padding: 12px;
+	}
+
+	.tp-brand-hostname {
+		font-size: 1rem;
+	}
+
+	h1,
+	h2,
+	.cbi-map-title {
+		font-size: 1rem;
+		padding: 10px;
+	}
+
+	h3,
+	legend {
+		font-size: 0.9rem;
+		margin: 10px 8px;
+	}
+
+	.btn,
+	.cbi-button {
+		font-size: 0.9rem;
+		line-height: 2rem;
+		padding: 4px 12px;
+	}
+
+	.table .th,
+	.table .td {
+		font-size: 0.8rem;
+		padding: 8px 6px;
+	}
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="number"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="url"],
+	select,
+	textarea,
+	.cbi-select,
+	.cbi-dropdown:not(.btn):not(.cbi-button) {
+		font-size: 16px;
+		height: 40px;
+		padding: 6px 10px;
+	}
+
+	.cbi-value-title {
+		font-size: 13px;
+	}
+
+	body.tp-logo-mode .header-banner {
+		display: none;
+	}
+
+	.header-logo a.logo-mode .tp-brand-logo {
+		max-height: 60px;
+	}
+
+	/* the login modal's own rules outrank the generic mobile sizing
+	   (.modal.login input is 2 classes + element): restore the same
+	   finger-friendly 40px controls and padding the rest of the theme gets */
+	.modal.login input {
+		height: 40px;
+	}
+
+	.modal.login>button.important {
+		line-height: 32px;
+	}
+
+	#modal_overlay.login-overlay {
+		padding: 12px;
+	}
+}
+
 
 .nowrap:not(span) {
 	white-space: nowrap
@@ -1504,11 +2125,25 @@ a:hover,
 }
 
 .modal.login>h4,
-.modal.login hr,
-.header-nav {
+.modal.login hr {
 	display: none
 }
 
 :is(body[data-page="admin-status-iptables"], body[data-page="admin-status-nftables-iptables"]) .cbi-tabmenu {
 	margin-top: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}
+
+#topmenu li a[href*="/admin"],
+#topmenu li a[href*="Administration"] {
+	display: none !important;
 }
