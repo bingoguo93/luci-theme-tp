@@ -4,12 +4,31 @@
 
 return baseclass.extend({
 	__init__() {
-		ui.menu.load().then((tree) => this.render(tree));
+		ui.menu.load().then((tree) => {
+			this.render(tree);
+		}, () => this.renderNavFallback());
+	},
+
+	/* reveal the translated warning rendered by footer.ut when the menu
+	   cannot be fetched or contains no entries at all */
+	renderNavFallback() {
+		const el = document.getElementById('nav-load-error');
+		const box = document.querySelector('#maincontent .content-margin') || document.getElementById('maincontent');
+		if (!el || !box || el.parentNode === box)
+			return;
+
+		el.style.display = '';
+		box.insertBefore(el, box.firstChild);
 	},
 
 	render(tree) {
 		let node = tree;
 		let url = '';
+
+		if (!tree || ui.menu.getChildren(tree).length == 0) {
+			this.renderNavFallback();
+			return;
+		}
 
 		this.renderModeMenu(tree);
 
