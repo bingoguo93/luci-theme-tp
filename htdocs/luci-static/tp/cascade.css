@@ -202,8 +202,11 @@ body.tp-logo-mode .header-logo {
 
 .tp-brand-logo {
 	display: none;
-	height: 160px;
-	width: 90%
+	height: auto;
+	width: auto;
+	max-height: 100%;
+	max-width: 100%;
+	object-fit: contain
 }
 
 .header-logo a.logo-mode .tp-brand-hostname {
@@ -213,10 +216,8 @@ body.tp-logo-mode .header-logo {
 .header-logo a.logo-mode .tp-brand-logo {
 	display: inline-block;
 	/* the logo is nominally 160px tall but the header-top is only 80px
-	   (60px on phones): clamp it so logo mode cannot overflow the header
-	   or the fixed-width brand column sideways */
-	max-height: 160px;
-	max-width: 100%
+	   (60px on phones): the max-height/max-width rules above keep it
+	   contained; object-fit:contain preserves the aspect ratio */
 }
 
 .header-banner {
