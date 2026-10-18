@@ -40,7 +40,7 @@
 			<div class="header-top">
 				<div class="header-logo">
 					<a id="tp-brand" href="{{ dispatcher.build_url() }}">
-						<span class="tp-brand-hostname">{{ boardinfo.hostname ?? '?' }}</span>
+						<span class="tp-brand-hostname">{{ entityencode(boardinfo.hostname ?? '?', true) }}</span>
 						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg?v={{ theme_ver }}" alt="TP-Link">
 					</a>
 				</div>
@@ -103,8 +103,11 @@
 			</nav>
 			<script>
 				/* temperature polling lives in temp-tp.js so the browser can cache it;
-				   the logo-mode script above stays inline to avoid FOUC */
-				L.require('temp-tp');
+				   the logo-mode script above stays inline to avoid FOUC.
+				   If the module cannot be loaded the indicator simply stays hidden. */
+				try {
+					Promise.resolve(L.require('temp-tp')).catch(function() {});
+				} catch (e) {}
 			</script>
 		</header>
 

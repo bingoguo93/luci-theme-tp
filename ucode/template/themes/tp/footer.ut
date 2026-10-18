@@ -21,11 +21,30 @@
 				{{ _('Software Version:') }} {{ version?.distversion ?? '?' }} ({{ version?.distrevision ?? '?' }})
 			</div>
 			<div class="footer-right">
-				{{ _('Hardware Version:') }} {{ boardinfo.model ?? 'OpenWrt Device' }}
+				{{ _('Hardware Version:') }} {{ entityencode(boardinfo.model ?? 'OpenWrt Device', true) }}
 			</div>
 			<ul class="breadcrumb pull-right" id="modemenu" style="display:none"></ul>
 		</footer>
-		<script>L.require('menu-tp')</script>
+		<div id="nav-load-error" class="alert-message warning" style="display:none">
+			<h4>{{ _('Navigation unavailable!') }}</h4>
+			<p>{{ _('The menu could not be loaded. Please reload the page to restore navigation.') }}</p>
+		</div>
+		<script>
+			function tpShowNavError() {
+				var el = document.getElementById('nav-load-error');
+				var box = document.querySelector('#maincontent .content-margin') || document.getElementById('maincontent');
+				if (!el || !box || el.parentNode === box)
+					return;
+				el.style.display = '';
+				box.insertBefore(el, box.firstChild);
+			}
+
+			try {
+				Promise.resolve(L.require('menu-tp')).catch(tpShowNavError);
+			} catch (e) {
+				tpShowNavError();
+			}
+		</script>
 		{% endif %}
 	</body>
 </html>

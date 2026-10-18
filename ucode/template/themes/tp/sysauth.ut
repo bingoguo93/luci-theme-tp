@@ -18,7 +18,7 @@
 
 <section hidden>
 	<div class="tp-login-header">
-		<h2>{{ boardinfo.hostname ?? '?' }}</h2>
+		<h2>{{ entityencode(boardinfo.hostname ?? '?', true) }}</h2>
 	</div>
 
 	<form method="post" class="cbi-map">
