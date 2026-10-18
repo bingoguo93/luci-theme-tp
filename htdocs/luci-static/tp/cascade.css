@@ -203,7 +203,7 @@ body.tp-logo-mode .header-logo {
 .tp-brand-logo {
 	display: none;
 	height: 160px;
-	width: auto
+	width: 90%
 }
 
 .header-logo a.logo-mode .tp-brand-hostname {
