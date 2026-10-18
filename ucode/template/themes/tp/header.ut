@@ -10,7 +10,7 @@
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
 	/* bump when theme assets change: busts stale browser caches */
-	const theme_ver = '20261017.4';
+	const theme_ver = '20261018.1';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
