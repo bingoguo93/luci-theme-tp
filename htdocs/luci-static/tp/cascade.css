@@ -232,13 +232,12 @@ body.tp-logo-mode .header-banner {
 	display: block
 }
 
-/* the banner is a 6:1 image living in a much wider strip: letterbox it
-   (still full height, centred) so neither the top glow nor the headline
-   text gets cropped away */
+/* the banner asset is pre-stretched to 26:1 with mirrored background, so
+   cover fills the strip edge to edge without cropping any content */
 .header-banner img {
 	height: 100%;
 	width: 100%;
-	object-fit: contain;
+	object-fit: cover;
 	object-position: center
 }
 
