@@ -8,6 +8,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=T-Link Classic Theme
 LUCI_DEPENDS:=+luci-base
+# bump together with theme_ver in ucode/template/themes/tp/header.ut
+# (theme_ver busts browser caches; PKG_VERSION versions the package)
 PKG_VERSION:=1.0.0
 PKG_LICENSE:=Apache-2.0
 

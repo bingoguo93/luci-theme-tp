@@ -9,7 +9,9 @@
 	import { getuid, getspnam } from 'luci.core';
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
-	/* bump when theme assets change: busts stale browser caches */
+	/* bump when theme assets change: busts stale browser caches.
+	   Unrelated to PKG_VERSION in the Makefile - keep the two in sync by
+	   convention when cutting a release */
 	const theme_ver = '20261019.1';
 
 	http.prepare_content('text/html; charset=UTF-8');
@@ -19,7 +21,7 @@
 <html lang="{{ dispatcher.lang }}">
 	<head>
 		<meta charset="utf-8">
-		<title>{{ striptags(`${boardinfo.hostname ?? '?'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`) }}</title>
+		<title>{{ entityencode(striptags(`${boardinfo.hostname ?? '?'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`), true) }}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="darkreader-lock">
 		<link rel="stylesheet" href="{{ media }}/cascade.css?v={{ theme_ver }}">
@@ -64,7 +66,26 @@
 							logo.src = logo.getAttribute('data-src');
 					}
 
-					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');
+					function storageGet(k) {
+						try {
+							return window.localStorage ? localStorage.getItem(k) : null;
+						} catch (e) {
+							return null;
+						}
+					}
+
+					function storageSet(k, v) {
+						try {
+							if (!window.localStorage)
+								return;
+							if (v === null)
+								localStorage.removeItem(k);
+							else
+								localStorage.setItem(k, v);
+						} catch (e) {}
+					}
+
+					applyLogoMode(storageGet(key) === '1');
 
 					brand.addEventListener('click', function(ev) {
 						/* modified clicks keep their normal link behaviour
@@ -76,13 +97,7 @@
 
 						var on = !brand.classList.contains('logo-mode');
 						applyLogoMode(on);
-
-						if (window.localStorage) {
-							if (on)
-								localStorage.setItem(key, '1');
-							else
-								localStorage.removeItem(key);
-						}
+						storageSet(key, on ? '1' : null);
 					});
 				})();
 			</script>
