@@ -14,6 +14,15 @@ PKG_LICENSE:=Apache-2.0
 define Package/luci-theme-tp/postrm
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT}" ] || {
+	# if this theme is still the active one, fall back to a bundled theme
+	# so LuCI is not left pointing at files we just removed
+	[ "$$(uci -q get luci.main.mediaurlbase)" = "/luci-static/tp" ] && {
+		if [ -d /www/luci-static/bootstrap ]; then
+			uci set luci.main.mediaurlbase=/luci-static/bootstrap
+		else
+			uci -q delete luci.main.mediaurlbase
+		fi
+	}
 	uci -q delete luci.themes.TPLink
 	uci commit luci
 }
