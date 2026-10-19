@@ -21,7 +21,7 @@
 		<h2>{{ entityencode(boardinfo.hostname ?? '?', true) }}</h2>
 	</div>
 
-	<form method="post" class="cbi-map">
+	<form method="post" id="loginform" class="cbi-map">
 		<div class="cbi-section">
 			<div class="cbi-section-node">
 				<div class="cbi-value">
@@ -70,20 +70,21 @@
 				{% endif %}
 			</div>
 		</div>
-		<hr>
-
-		{% if (auth_message): %}
-		<div class="alert-message{% if (auth_plugin): %} warning{% endif %}">
-			{{ auth_message }}
-		</div>
-		{% elif (fuser): %}
-		<div class="alert-message error">
-			{{ _('Invalid username and/or password! Please try again.') }}
-		</div>
-		{% endif %}
-
-		<button type="submit" class="btn cbi-button-positive important">{{ _('Log in') }}</button>
 	</form>
+
+	<hr>
+
+	{% if (auth_message): %}
+	<div class="alert-message{% if (auth_plugin): %} warning{% endif %}">
+		{{ auth_message }}
+	</div>
+	{% elif (fuser): %}
+	<div class="alert-message error">
+		{{ _('Invalid username and/or password! Please try again.') }}
+	</div>
+	{% endif %}
+
+	<button type="submit" form="loginform" class="btn cbi-button-positive important">{{ _('Log in') }}</button>
 </section>
 
 <div id="view">
