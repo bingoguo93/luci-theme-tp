@@ -362,13 +362,17 @@ body.tp-logo-mode .sidebar-footer {
 .sidebar-footer a {
 	display: block;
 	color: #fff;
-	font-size: 13px;
+	/* icon-only link: size and centre the glyph */
+	font-size: 22px;
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
 	margin-bottom: 8px
 }
 
 .sidebar-footer a:hover {
-	opacity: 1;
-	text-decoration: underline
+	opacity: 0.85;
+	text-decoration: none
 }
 
 #maincontent {

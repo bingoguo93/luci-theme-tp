@@ -12,7 +12,7 @@
 	/* bump when theme assets change: busts stale browser caches.
 	   Unrelated to PKG_VERSION in the Makefile - keep the two in sync by
 	   convention when cutting a release */
-	const theme_ver = '20261019.2';
+	const theme_ver = '20261019.3';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
@@ -123,7 +123,7 @@
 			<aside class="sidebar" id="sidebar" role="navigation" aria-label="{{ _('Sidebar navigation') }}">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
-					<a href="https://github.com/bingoguo93/luci-theme-tp">{{ _('本主题项目主页，') }}<br>{{ _('欢迎 Star & 改进 >>...') }}</a>
+					<a href="https://github.com/bingoguo93/luci-theme-tp" title="GitHub" aria-label="GitHub"><span aria-hidden="true">⭐</span></a>
 				</div>
 			</aside>
 
