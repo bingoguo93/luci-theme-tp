@@ -115,7 +115,7 @@
 			<aside class="sidebar" id="sidebar" role="navigation" aria-label="{{ _('Sidebar navigation') }}">
 				<ul id="sidemenu" style="display:none"></ul>
 				<div class="sidebar-footer">
-					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">{{ _('更多 TP-LINK 产品，') }}<br>{{ _('请点击查看 >>...') }}</a>
+					<a href="https://github.com/bingoguo93/luci-theme-tp">{{ _('本主题项目主页，') }}<br>{{ _('欢迎 Star & 改进 >>...') }}</a>
 				</div>
 			</aside>
 
