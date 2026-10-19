@@ -155,12 +155,7 @@ header {
 	background: var(--tp-blue-dark);
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
-	border-right: 0
-}
-
-body.tp-logo-mode .header-logo {
-	border-right: 15px solid var(--tp-blue-dark)
+	justify-content: flex-start
 }
 
 .header-logo a {
@@ -215,6 +210,8 @@ body.tp-logo-mode .header-logo {
 
 .header-logo a.logo-mode .tp-brand-logo {
 	display: inline-block;
+	/* centred in the column: auto margins centre a flex item */
+	margin: 0 auto;
 	/* the logo is nominally 160px tall but the header-top is only 80px
 	   (60px on phones): the max-height/max-width rules above keep it
 	   contained; object-fit:contain preserves the aspect ratio */
