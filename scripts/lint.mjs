@@ -120,13 +120,19 @@ const allFiles = walk(root).filter((f) => !rel(f).split(path.sep).includes('.git
 			const ch = src[i];
 
 			if (ch === '"' || ch === "'") {
-				const end = src.indexOf(ch, i + 1);
-				if (end === -1) {
+				/* honour backslash escapes so a \" inside the string does not end it */
+				let j = i + 1;
+				while (j < src.length && src[j] !== ch) {
+					if (src[j] === '\\')
+						j++;
+					j++;
+				}
+				if (j >= src.length) {
 					fail(`${rel(f)}: unterminated CSS string`);
 					bad++;
 					break;
 				}
-				i = end + 1;
+				i = j + 1;
 				continue;
 			}
 

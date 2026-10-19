@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# this workflow only needs to read the repository
+permissions:
+  contents: read
+
 # one build per ref at a time and drop superseded pending builds; builds
 # started by the release workflow are never cancelled mid-flight
 # (github.workflow is the caller's name when this file is reused)
