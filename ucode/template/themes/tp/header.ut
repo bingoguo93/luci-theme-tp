@@ -10,7 +10,7 @@
 
 	const boardinfo = ubus.call('system', 'board') ?? {};
 	/* bump when theme assets change: busts stale browser caches */
-	const theme_ver = '20261018.3';
+	const theme_ver = '20261019.1';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
@@ -41,18 +41,15 @@
 				<div class="header-logo">
 					<a id="tp-brand" href="{{ dispatcher.build_url() }}">
 						<span class="tp-brand-hostname">{{ entityencode(boardinfo.hostname ?? '?', true) }}</span>
-						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg?v={{ theme_ver }}" alt="TP-Link">
+						<img class="tp-brand-logo" data-src="{{ media }}/imgs/logo.svg?v={{ theme_ver }}" alt="">
 					</a>
 				</div>
-				<div class="header-banner">
-					<img data-src="{{ media }}/imgs/header.webp?v={{ theme_ver }}" alt="" width="2804" height="466" decoding="async">
-				</div>
+				<div class="header-banner" aria-hidden="true"></div>
 			</div>
 			<script>
 				(function() {
 					var brand = document.getElementById('tp-brand');
 					var logo = brand ? brand.querySelector('.tp-brand-logo') : null;
-					var banner = document.querySelector('.header-banner img');
 					var key = 'luci-theme-tp-brand-logo';
 
 					if (!brand)
@@ -62,13 +59,9 @@
 						brand.classList.toggle('logo-mode', on);
 						document.body.classList.toggle('tp-logo-mode', on);
 
-						/* both images are display:none by default - only fetch them when needed */
-						if (on) {
-							[ logo, banner ].forEach(function(img) {
-								if (img && !img.src)
-									img.src = img.getAttribute('data-src');
-							});
-						}
+						/* the logo is display:none by default - only fetch it when needed */
+						if (on && logo && !logo.src)
+							logo.src = logo.getAttribute('data-src');
 					}
 
 					applyLogoMode(window.localStorage && localStorage.getItem(key) === '1');

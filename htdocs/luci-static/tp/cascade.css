@@ -67,7 +67,7 @@
 		filter: none
 	}
 
-	.header-banner img {
+	.header-banner {
 		filter: brightness(0.7);
 	}
 
@@ -225,22 +225,17 @@ body.tp-logo-mode .header-logo {
 	flex: 1;
 	display: none;
 	overflow: hidden;
-	background: var(--tp-blue-dark);
-	/* ensure the banner stretches to fill the header-top height */
+	/* classic router-style decorative strip: pure CSS, no stock artwork.
+	   The left edge is var(--tp-blue-dark) so it continues the logo column
+	   seamlessly in logo mode */
+	background:
+		linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18) 100%),
+		linear-gradient(100deg, var(--tp-blue-dark) 0%, var(--tp-blue-dark) 22%, #0a66c2 48%, #2e8fe0 62%, #0a66c2 78%, var(--tp-blue-dark) 100%);
 	min-height: 100%;
 }
 
 body.tp-logo-mode .header-banner {
 	display: block
-}
-
-/* the banner asset is pre-stretched to 26:1 with mirrored background, so
-   cover fills the strip edge to edge without cropping any content */
-.header-banner img {
-	height: 100%;
-	width: 100%;
-	object-fit: cover;
-	object-position: center
 }
 
 .page-wrapper {
