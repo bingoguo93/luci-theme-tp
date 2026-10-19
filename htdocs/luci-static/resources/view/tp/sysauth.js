@@ -5,10 +5,9 @@
 return view.extend({
 	render() {
 		const form = document.querySelector('form');
-		const btn = document.querySelector('button');
 		const pwd = document.querySelector('input[type="password"]');
 
-		if (!form || !btn)
+		if (!form)
 			return '';
 
 		const dlg = ui.showModal(
@@ -21,24 +20,16 @@ return view.extend({
 		if (overlay)
 			overlay.classList.add('login-overlay');
 
-		form.addEventListener('keypress', (ev) => {
-			if (ev.key === 'Enter') {
-				/* one explicit click only: without preventDefault the
-				   browser's implicit submission races form.submit() */
-				ev.preventDefault();
-				btn.click();
-			}
-		});
-
-		btn.addEventListener('click', () => {
+		/* let the browser handle submission natively: that keeps constraint
+		   validation (required/pattern) and correct Enter/IME behaviour;
+		   this handler only swaps the dialog content for the spinner */
+		form.addEventListener('submit', () => {
 			dlg.querySelectorAll('*').forEach((node) => {
 				node.style.display = 'none';
 			});
 			dlg.appendChild(E('div', {
 				class: 'spinning'
 			}, _('Logging in…')));
-
-			form.submit();
 		});
 
 		if (pwd)
