@@ -6,7 +6,7 @@
 
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=TP-Link Classic Theme
+LUCI_TITLE:=T-Link Classic Theme
 LUCI_DEPENDS:=+luci-base
 PKG_VERSION:=1.0.0
 PKG_LICENSE:=Apache-2.0

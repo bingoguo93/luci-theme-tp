@@ -3,9 +3,12 @@ A Legacy-style theme for OpenWrt's LuCI interface, **just for fun**.
 
 It is not intended to be used as a production theme, and may contain bugs and incomplete features. Use it at your own risk.
 
+The look is inspired by classic router admin pages. It is not affiliated with
+or endorsed by TP-Link; no TP-Link logos or artwork are included.
+
 ## Features
 
-- Classic TP-Link-styled header, sidebar and content layout
+- Classic retro-router-styled header, sidebar and content layout
 - Responsive design with touch-friendly targets on small screens
 - Automatic dark mode via `prefers-color-scheme` (content images are toned down, logo and UI icons stay untouched)
 - Live CPU temperature indicator in the header (warn/danger coloring at 65 °C / 80 °C)
@@ -37,14 +40,15 @@ make package/luci-theme-tp/compile
 
 ## Asset size
 
-Theme assets were trimmed from ~880 KB to under 60 KB:
+Theme assets stay tiny (well under 10 KB):
 
 | Asset | Before | After |
 | --- | --- | --- |
-| Header banner | `header.png` (875 KB) | `header.webp` (55 KB, same resolution, q82) |
-| Favicon | full-size banner image | dedicated 2 KB `favicon.png` |
+| Header banner | `header.webp` (55 KB stock art) | pure CSS gradient (0 KB) |
+| Brand wordmark | stock logo (2.7 KB) | custom `logo.svg` (0.5 KB) |
+| Favicon | full-size banner image | dedicated 0.7 KB `favicon.png` |
 
-The header banner is lazy-loaded (`data-src`) and only fetched when the logo
+The brand logo is lazy-loaded (`data-src`) and only fetched when the logo
 display mode needs it, so it costs nothing on normal page loads.
 
 ## Development
@@ -59,4 +63,4 @@ node scripts/lint.mjs
 
 ## License
 
-Apache-2.0 (see `Makefile`).
+Apache-2.0 (see `LICENSE`).
