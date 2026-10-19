@@ -173,7 +173,8 @@ body.tp-logo-mode .header-logo {
 	text-align: left;
 	user-select: none;
 	width: 100%;
-	padding-left: 15px;
+	/* symmetric 15px inset: the logo/hostname get the same gap on both sides */
+	padding: 0 15px;
 	transition: var(--transition);
 	min-height: auto;
 	min-width: auto;
