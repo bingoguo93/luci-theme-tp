@@ -39,17 +39,17 @@
 				{% if (auth_fields): %}
 					{% for (let field in auth_fields): %}
 						<div class="cbi-value">
-							<label class="cbi-value-title" for="{{ field.name }}">{{ _(field.label ?? field.name) }}</label>
+							<label class="cbi-value-title" for="{{ entityencode(field.name, true) }}">{{ entityencode(_(field.label ?? field.name), true) }}</label>
 							<div class="cbi-value-field">
 								<input
-									name="{{ field.name }}"
-									id="{{ field.name }}"
-									type="{{ field.type ?? 'text' }}"
-									{% if (field.placeholder): %}placeholder="{{ field.placeholder }}"{% endif %}
-									{% if (field.inputmode): %}inputmode="{{ field.inputmode }}"{% endif %}
-									{% if (field.pattern): %}pattern="{{ field.pattern }}"{% endif %}
-									{% if (field.maxlength): %}maxlength="{{ field.maxlength }}"{% endif %}
-									{% if (field.autocomplete): %}autocomplete="{{ field.autocomplete }}"{% endif %}
+									name="{{ entityencode(field.name, true) }}"
+									id="{{ entityencode(field.name, true) }}"
+									type="{{ entityencode(field.type ?? 'text', true) }}"
+									{% if (field.placeholder): %}placeholder="{{ entityencode(field.placeholder, true) }}"{% endif %}
+									{% if (field.inputmode): %}inputmode="{{ entityencode(field.inputmode, true) }}"{% endif %}
+									{% if (field.pattern): %}pattern="{{ entityencode(field.pattern, true) }}"{% endif %}
+									{% if (field.maxlength): %}maxlength="{{ entityencode(field.maxlength, true) }}"{% endif %}
+									{% if (field.autocomplete): %}autocomplete="{{ entityencode(field.autocomplete, true) }}"{% endif %}
 									{% if (field.required): %}required{% endif %}
 								>
 							</div>
