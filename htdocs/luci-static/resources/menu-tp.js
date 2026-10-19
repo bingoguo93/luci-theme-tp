@@ -5,20 +5,22 @@
 return baseclass.extend({
 	__init__() {
 		ui.menu.load().then((tree) => {
-			this.render(tree);
+			try {
+				this.render(tree);
+			} catch (e) {
+				/* a half-rendered menu is worse than none - show the warning */
+				this.renderNavFallback();
+			}
 		}, () => this.renderNavFallback());
 	},
 
 	/* reveal the translated warning rendered by footer.ut when the menu
-	   cannot be fetched or contains no entries at all */
+	   cannot be fetched, is empty or fails to render. The DOM work lives in
+	   footer.ut's inline tpShowNavError() because it is also needed when this
+	   module itself fails to load - just delegate to it from here. */
 	renderNavFallback() {
-		const el = document.getElementById('nav-load-error');
-		const box = document.querySelector('#maincontent .content-margin') || document.getElementById('maincontent');
-		if (!el || !box || el.parentNode === box)
-			return;
-
-		el.style.display = '';
-		box.insertBefore(el, box.firstChild);
+		if (typeof tpShowNavError === 'function')
+			tpShowNavError();
 	},
 
 	render(tree) {
@@ -34,7 +36,8 @@ return baseclass.extend({
 
 		if (L.env.dispatchpath.length >= 3) {
 			for (let i = 0; i < 3 && node; i++) {
-				node = node.children[L.env.dispatchpath[i]];
+				/* menu trees can be partial - never assume children exist */
+				node = node.children ? node.children[L.env.dispatchpath[i]] : null;
 				url = url + (url ? '/' : '') + L.env.dispatchpath[i];
 			}
 
@@ -76,30 +79,31 @@ return baseclass.extend({
 	navIcon(child) {
 		try {
 			const byName = {
-			status: '◈', system: '❖', network: '🌐', services: '⚙',
-			nas: '💾', vpn: '🔒', logout: '⏻',
-			istore: '🛒', store: '🛒', modem: '📡'
-		};
-		const byTitle = [
-			[/调制解调|modem/i, '📡'],
-			[/iStore|应用|软件|插件/i, '🛒'],
-			[/退出|登出|logout/i, '⏻'],
-			[/状态|status/i, '◈'],
-			[/系统|system/i, '❖'],
-			[/网络|network/i, '🌐'],
-			[/服务|services/i, '⚙'],
-			[/存储|nas|硬盘/i, '💾'],
-			[/vpn|代理|加速/i, '🔒']
-		];
+				status: '◈', system: '❖', network: '🌐', services: '⚙',
+				nas: '💾', vpn: '🔒', logout: '⏻',
+				istore: '🛒', store: '🛒', modem: '📡'
+			};
+			const byTitle = [
+				[/调制解调|modem/i, '📡'],
+				[/iStore|应用|软件|插件/i, '🛒'],
+				[/退出|登出|logout/i, '⏻'],
+				[/状态|status/i, '◈'],
+				[/系统|system/i, '❖'],
+				[/网络|network/i, '🌐'],
+				[/服务|services/i, '⚙'],
+				[/存储|nas|硬盘/i, '💾'],
+				[/vpn|代理|加速/i, '🔒']
+			];
 
-		const named = byName[String(child.name || '').toLowerCase()];
-		if (named)
-			return named;
+			const named = byName[String(child.name || '').toLowerCase()];
+			if (named)
+				return named;
 
-		const title = String(child.title || '');
-		for (const [re, glyph] of byTitle)
-			if (re.test(title))
-				return glyph;
+			const title = String(child.title || '');
+			for (const [re, glyph] of byTitle) {
+				if (re.test(title))
+					return glyph;
+			}
 
 			return '🧩';
 		} catch (e) {
