@@ -44,7 +44,7 @@ Theme assets stay tiny (well under 10 KB):
 
 | Asset | Before | After |
 | --- | --- | --- |
-| Header banner | `header.webp` (55 KB stock art) | pure CSS gradient (0 KB) |
+| Header banner | `header.webp` (55 KB stock art) | flat CSS background (0 KB) |
 | Brand wordmark | stock logo (2.7 KB) | custom `logo.svg` (0.5 KB) |
 | Favicon | full-size banner image | dedicated 0.7 KB `favicon.png` |
 

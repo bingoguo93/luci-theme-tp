@@ -67,9 +67,7 @@
 		filter: none
 	}
 
-	.header-banner {
-		filter: brightness(0.7);
-	}
+	/* the banner is a flat colour now - nothing to tone down in dark mode */
 
 	/* the login backdrop is a fixed light blue that clashes with the
 	   dark login card; follow the dark palette like everything else */
@@ -225,12 +223,8 @@ body.tp-logo-mode .header-logo {
 	flex: 1;
 	display: none;
 	overflow: hidden;
-	/* classic router-style decorative strip: pure CSS, no stock artwork.
-	   The left edge is var(--tp-blue-dark) so it continues the logo column
-	   seamlessly in logo mode */
-	background:
-		linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, 0.18) 100%),
-		linear-gradient(100deg, var(--tp-blue-dark) 0%, var(--tp-blue-dark) 22%, #0a66c2 48%, #2e8fe0 62%, #0a66c2 78%, var(--tp-blue-dark) 100%);
+	/* flat brand colour: same as the logo column, so the strip blends in */
+	background: var(--tp-blue-dark);
 	min-height: 100%;
 }
 
