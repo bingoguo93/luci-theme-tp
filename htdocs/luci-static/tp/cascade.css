@@ -198,7 +198,8 @@ header {
 	display: none;
 	height: auto;
 	width: auto;
-	max-height: 100%;
+	/* cap the wordmark at 40px so it sits comfortably in the header bar */
+	max-height: 40px;
 	max-width: 100%;
 	object-fit: contain
 }
@@ -210,10 +211,7 @@ header {
 .header-logo a.logo-mode .tp-brand-logo {
 	display: inline-block;
 	/* centred in the column: auto margins centre a flex item */
-	margin: 0 auto;
-	/* the logo is nominally 160px tall but the header-top is only 80px
-	   (60px on phones): the max-height/max-width rules above keep it
-	   contained; object-fit:contain preserves the aspect ratio */
+	margin: 0 auto
 }
 
 .header-banner {
@@ -2094,10 +2092,6 @@ a:hover {
 
 	body.tp-logo-mode .header-banner {
 		display: none;
-	}
-
-	.header-logo a.logo-mode .tp-brand-logo {
-		max-height: 60px;
 	}
 
 	/* the login modal's own rules outrank the generic mobile sizing
