@@ -689,6 +689,11 @@ textarea {
 	margin-right: 6px
 }
 
+/* DHCPv6 lease table kept in the DOM but hidden after merging into v4 */
+.tp-lease-merged-away {
+	display: none
+}
+
 .tr.drag-over-above,
 .tr.drag-over-below {
 	border: 2px solid var(--tp-blue);

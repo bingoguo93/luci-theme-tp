@@ -2,19 +2,20 @@
 'require baseclass';
 
 /*
- * Decorate DHCP lease tables with a small brand icon next to each hostname,
- * and drop the Interface/DUID columns so the v4 and v6 lease tables line up.
+ * Lease table enhancements for the status page:
  *
- * A row is treated as a lease row when one of its cells holds a MAC address
- * (6 octets) or a longer client id such as a DHCPv6 DUID. The brand is
- * guessed from the MAC OUI first, then from hostname keywords; unknown
- * devices get the fallback glyph. Matching is best effort - wrong guesses
- * are harmless, the icon is decorative only.
+ *   - decorate each lease row with a small brand icon next to the hostname
+ *     (MAC OUI first, then hostname keywords, then a fallback glyph),
+ *   - drop the Interface/DUID columns,
+ *   - merge the DHCPv4 and DHCPv6 tables into one (the v6 table is kept in
+ *     the DOM but hidden, and its rows are redistributed on every pass,
+ *     which also covers status polling re-rendering the whole section).
  *
  * Columns are located via the table header (locale aware, English and
  * Chinese), never by fixed index, so both the 24.10 and the newer layouts
  * (which prepend an Interface column) work. Column removal only happens in
- * lease tables.
+ * lease tables; matching the brand is best effort - wrong guesses only
+ * affect a decorative icon.
  */
 
 return baseclass.extend({
@@ -27,6 +28,9 @@ return baseclass.extend({
 			{ icon: '📱', name: 'Huawei', oui: [ '00:e0:fc', '04:bd:70', '24:db:ac', '48:46:fb' ] },
 			{ icon: '📱', name: 'Google', oui: [ '3c:28:6d', '54:60:09', 'f4:f5:e8', '94:eb:2c' ] },
 			{ icon: '🪟', name: 'Microsoft', oui: [ '00:03:ff', '00:0d:3a', '00:12:5a', '28:18:78', 'dc:b4:c4' ] },
+			{ icon: '💻', name: 'Dell', oui: [ '00:06:5b', '00:14:22', '00:1a:a0', '14:fe:b5' ] },
+			{ icon: '💻', name: 'HP', oui: [ '3c:d9:2b', '9c:8e:99', '70:5a:0f' ] },
+			{ icon: '💻', name: 'Lenovo', oui: [ '00:21:5c', '60:d9:c7', '8c:16:45' ] },
 			{ icon: '🎮', name: 'Sony', oui: [ '00:04:1f', '00:13:a9', '00:1a:80', '04:5d:4b' ] },
 			{ icon: '🎮', name: 'Nintendo', oui: [ '98:b6:e9', '8c:cd:e8', 'e0:0c:7f', '40:f4:07' ] },
 			{ icon: '🍓', name: 'Raspberry Pi', oui: [ 'b8:27:eb', 'dc:a6:32', 'e4:5f:01', 'd8:3a:dd' ] },
@@ -45,23 +49,25 @@ return baseclass.extend({
 			for (const prefix of brand.oui)
 				this.oui[prefix] = brand;
 
-		/* hostname keyword heuristics - first match wins */
+		/* hostname keyword heuristics - device types first, brand names
+		   as a later fallback (OUI matching already covers real brands) */
 		this.patterns = [
-			[ /iphone|ipad|ipod|macbook|imac|mac[-_ ]|apple/, '🍎', 'Apple' ],
-			[ /android|pixel|galaxy|oneplus|oppo|vivo|redmi|poco|xiaomi|huawei|honor|realme|tecno|infinix/, '📱', 'Phone' ],
-			[ /desktop|surface|windows|win[-_ ]/, '🪟', 'Windows PC' ],
-			[ /thinkpad|dell|lenovo|hp[-_ ]|asus|acer|msi|laptop|notebook|\bnuc\b/, '💻', 'Laptop' ],
-			[ /nas|synology|qnap|diskstation|truenas|openmedia|unraid/, '💾', 'NAS' ],
-			[ /appletv|chromecast|firetv|roku|smart[-_ ]?tv|mi[-_ ]?tv|shield|television/, '📺', 'TV' ],
-			[ /print|officejet|laserjet|deskjet|epson|canon|brother|xerox/, '🖨️', 'Printer' ],
-			[ /camera|cam[-_ ]|\bipc\b|hik|dahua|reolink|ezviz|wyze|blink|ring/, '📷', 'Camera' ],
-			[ /watch|band|fitbit|garmin/, '⌚', 'Wearable' ],
+			[ /macbook|thinkpad|thinkbook|yoga|ideapad|matebook|zenbook|灵耀|latitude|inspiron|pavilion|elitebook|probook|spectre|\bxps\b|rog|predator|拯救者|飞行堡垒|swift|\bgram\b|chromebook|surface|笔记本|laptop|notebook/, '💻', 'Laptop' ],
+			[ /windows|win[-_ ]?\d/, '🪟', 'Windows PC' ],
+			[ /imac|台式|台机|desktop|tower|workstation|all[-_ ]?in[-_ ]?one|\bpc\b|pc\d|\bnuc\b/, '🖥️', 'Desktop' ],
+			[ /iphone|ipad|tablet|android|pixel|galaxy|oneplus|oppo|vivo|redmi|poco|xiaomi|huawei|honor|realme|tecno|infinix|phone/, '📱', 'Phone' ],
+			[ /appletv|apple[-_ ]?tv|chromecast|firetv|roku|smart[-_ ]?tv|mi[-_ ]?tv|shield|television|电视/, '📺', 'TV' ],
+			[ /nas|synology|qnap|diskstation|truenas|openmedia|unraid|存储/, '💾', 'NAS' ],
+			[ /print|officejet|laserjet|deskjet|epson|canon|brother|xerox|打印/, '🖨️', 'Printer' ],
+			[ /camera|cam[-_ ]|\bipc\b|hik|dahua|reolink|ezviz|wyze|blink|ring|摄像/, '📷', 'Camera' ],
+			[ /watch|band|fitbit|garmin|手表/, '⌚', 'Wearable' ],
 			[ /esp\d|tasmota|shelly|sonoff|zigbee|mqtt|iot|sensor|plug|bulb|lamp|kasa|tuya/, '📟', 'IoT device' ],
-			[ /\bap\b|router|gateway|mesh|repeater|openwrt|modem|\bcpe\b/, '🌐', 'Network device' ],
-			[ /speaker|alexa|homepod|sonos|echo/, '🔊', 'Speaker' ],
-			[ /xbox|playstation|ps[345]|nintendo|switch|steam|game/, '🎮', 'Console' ],
-			[ /server|proxmox|esxi|ubuntu|debian|linux|fedora|docker|vm[-_ ]/, '🖥️', 'Server' ],
-			[ /phone|voip|\bsip\b|ip[-_ ]?phone/, '📱', 'Phone' ]
+			[ /\bap\b|router|gateway|mesh|repeater|openwrt|modem|\bcpe\b|路由/, '🌐', 'Network device' ],
+			[ /speaker|alexa|homepod|sonos|echo|音箱/, '🔊', 'Speaker' ],
+			[ /xbox|playstation|ps[345]|nintendo|switch|steam|game|游戏/, '🎮', 'Console' ],
+			[ /server|proxmox|esxi|ubuntu|debian|linux|fedora|docker|vm[-_ ]|服务器/, '🖥️', 'Server' ],
+			[ /mac[-_ ]|apple/, '🍎', 'Apple' ],
+			[ /voip|\bsip\b|ip[-_ ]?phone/, '📱', 'Phone' ]
 		];
 
 		this.fallback = { icon: '🧩', name: _('Unknown device') };
@@ -152,6 +158,124 @@ return baseclass.extend({
 		}
 	},
 
+	/* role of every header column: host/addr/mac/iaid/time/action */
+	columnRoles(table) {
+		const header = (table.rows && table.rows[0])
+			? Array.from(table.rows[0].cells || []) : [];
+		const seen = {};
+		let valid = true;
+
+		const roles = header.map((cell) => {
+			const text = (cell.textContent || '').trim();
+			let role;
+
+			if (/^(hostname|host|主机名|主机)$/i.test(text))
+				role = 'host';
+			else if (/mac/i.test(text))
+				role = 'mac';
+			else if (/iaid/i.test(text))
+				role = 'iaid';
+			else if (/ip.*(addr|地址)/i.test(text) || /地址/.test(text))
+				role = 'addr';
+			else if (/remaining|剩余|lease.?time|租约/i.test(text))
+				role = 'time';
+			else
+				role = 'action';
+
+			if (seen[role])
+				valid = false;
+
+			seen[role] = true;
+			return role;
+		});
+
+		return valid ? { header, roles } : null;
+	},
+
+	_placeholderCell() {
+		const td = document.createElement('td');
+
+		td.className = 'td';
+		td.textContent = '-';
+		return td;
+	},
+
+	/*
+	 * Merge the DHCPv6 lease table into the DHCPv4 one. The v6 table stays
+	 * in the DOM (hidden) so its rows keep being redistributed even when
+	 * the status page re-renders the section on every poll.
+	 */
+	mergeLeaseTables() {
+		const v4 = document.getElementById('status_leases');
+		const v6 = document.getElementById('status_leases6');
+
+		if (!v4 || !v6)
+			return;
+
+		const r4 = this.columnRoles(v4);
+		const r6 = this.columnRoles(v6);
+
+		if (!r4 || !r6 || !r4.roles.includes('host') || !r6.roles.includes('host'))
+			return; /* unexpected layout - leave the tables alone */
+
+		if (!v4.hasAttribute('data-tp-merged')) {
+			v4.setAttribute('data-tp-merged', '1');
+
+			/* one shared address column now covers both families */
+			const addrIdx = r4.roles.indexOf('addr');
+
+			if (addrIdx >= 0 && r4.header[addrIdx])
+				r4.header[addrIdx].textContent = _('IP address');
+
+			const h3 = v4.previousElementSibling;
+
+			if (h3 && /^H3$/i.test(h3.tagName))
+				h3.textContent = _('Active DHCP Leases');
+
+			v6.classList.add('tp-lease-merged-away');
+
+			const h36 = v6.previousElementSibling;
+
+			if (h36 && /^H3$/i.test(h36.tagName))
+				h36.classList.add('tp-lease-merged-away');
+		}
+
+		for (const row of Array.from(v6.rows || []).slice(1)) {
+			if (row.hasAttribute('data-tp-moved'))
+				continue;
+
+			const cells = row.cells ? Array.from(row.cells) : [];
+
+			if (cells.length < 2)
+				continue; /* placeholder row */
+
+			const byRole = {};
+
+			r6.roles.forEach((role, i) => {
+				if (cells[i])
+					byRole[role] = cells[i];
+			});
+
+			/* drop columns the merged table does not have */
+			for (const role of Object.keys(byRole))
+				if (!r4.roles.includes(role) && byRole[role].remove)
+					byRole[role].remove();
+
+			/* reorder to the merged layout, filling gaps with placeholders */
+			for (const role of r4.roles)
+				row.appendChild(byRole[role] || this._placeholderCell());
+
+			row.setAttribute('data-tp-moved', '1');
+
+			const placeholder = v4.querySelector && v4.querySelector('.tr.placeholder');
+
+			if (placeholder && placeholder.remove)
+				placeholder.remove();
+
+			v4.appendChild(row);
+		}
+	},
+
 	brandFor(id, hostname) {
 		const prefix = id.toLowerCase().replace(/-/g, ':').slice(0, 8);
 
@@ -218,5 +342,7 @@ return baseclass.extend({
 					/^status_leases/.test(table.id || '')))
 				this.trimColumns(table, map.drop);
 		}
+
+		this.mergeLeaseTables();
 	}
 });
