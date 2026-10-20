@@ -654,7 +654,17 @@ textarea {
 	font-size: 13px;
 	line-height: 20px;
 	padding: 8px 10px;
-	vertical-align: middle
+	vertical-align: middle;
+	/* classic look: table content is centred like the header row */
+	text-align: center
+}
+
+/* but form controls keep natural left-aligned editing */
+.table .td input,
+.table .td textarea,
+.table .td select,
+.table .td .cbi-select {
+	text-align: left
 }
 
 .table .th {
@@ -681,6 +691,12 @@ textarea {
 	text-align: center;
 	color: var(--tp-text-light);
 	font-style: italic
+}
+
+/* brand icons injected by lease-brand.js next to DHCP lease hostnames */
+.lease-ico {
+	display: inline-block;
+	margin-right: 6px
 }
 
 .tr.drag-over-above,

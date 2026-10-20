@@ -41,6 +41,8 @@
 
 			try {
 				Promise.resolve(L.require('menu-tp')).catch(tpShowNavError);
+				/* lease brand icons are decorative - fail silently */
+				Promise.resolve(L.require('lease-brand')).catch(function() {});
 			} catch (e) {
 				tpShowNavError();
 			}
