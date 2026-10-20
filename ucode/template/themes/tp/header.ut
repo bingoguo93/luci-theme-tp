@@ -12,7 +12,7 @@
 	/* bump when theme assets change: busts stale browser caches.
 	   Unrelated to PKG_VERSION in the Makefile - keep the two in sync by
 	   convention when cutting a release */
-	const theme_ver = '20261020.3';
+	const theme_ver = '20261020.4';
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
