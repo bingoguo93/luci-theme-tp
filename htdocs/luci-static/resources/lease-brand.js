@@ -2,13 +2,19 @@
 'require baseclass';
 
 /*
- * Decorate DHCP lease tables with a small brand icon next to each hostname.
+ * Decorate DHCP lease tables with a small brand icon next to each hostname,
+ * and drop the Interface/DUID columns so the v4 and v6 lease tables line up.
  *
  * A row is treated as a lease row when one of its cells holds a MAC address
  * (6 octets) or a longer client id such as a DHCPv6 DUID. The brand is
  * guessed from the MAC OUI first, then from hostname keywords; unknown
  * devices get the fallback glyph. Matching is best effort - wrong guesses
  * are harmless, the icon is decorative only.
+ *
+ * Columns are located via the table header (locale aware, English and
+ * Chinese), never by fixed index, so both the 24.10 and the newer layouts
+ * (which prepend an Interface column) work. Column removal only happens in
+ * lease tables.
  */
 
 return baseclass.extend({
@@ -78,6 +84,10 @@ return baseclass.extend({
 	/* client id cell: MAC (6 octets) or longer ids like DHCPv6 DUIDs */
 	findClientId(cells) {
 		for (const cell of cells) {
+			/* a cell holding form controls is an edit row, not a lease row */
+			if (cell.querySelector && cell.querySelector('input, textarea, select'))
+				return null;
+
 			const text = (cell.textContent || '').trim().toUpperCase();
 
 			if (/^([0-9A-F]{2}[:-]){5,}[0-9A-F]{2}$/.test(text))
@@ -85,6 +95,61 @@ return baseclass.extend({
 		}
 
 		return null;
+	},
+
+	/*
+	 * Column map for a lease table, derived from the header row and cached
+	 * on the element (the header is only intact before the first trim):
+	 *   host - index of the hostname column (-1 when not found)
+	 *   drop - indexes of the Interface/DUID columns to remove
+	 */
+	tableMap(table) {
+		let host = table.getAttribute('data-tp-host');
+		let drop = table.getAttribute('data-tp-drop');
+
+		if (host === null || drop === null) {
+			const header = (table.rows && table.rows[0])
+				? Array.from(table.rows[0].cells || []) : [];
+			const dropIdx = [];
+			let hostIdx = -1;
+
+			header.forEach((cell, i) => {
+				const text = (cell.textContent || '').trim();
+
+				if (/^(interface|接口)$/i.test(text) || /^duid$/i.test(text))
+					dropIdx.push(i);
+				else if (hostIdx < 0 && /^(hostname|host|主机名|主机)$/i.test(text))
+					hostIdx = i;
+			});
+
+			host = String(hostIdx);
+			drop = dropIdx.join(',');
+			table.setAttribute('data-tp-host', host);
+			table.setAttribute('data-tp-drop', drop);
+		}
+
+		return {
+			host: parseInt(host, 10),
+			drop: drop ? drop.split(',').map(Number) : []
+		};
+	},
+
+	/* remove the cached Interface/DUID column indexes from every row */
+	trimColumns(table, drop) {
+		for (const row of Array.from(table.rows || [])) {
+			if (row.hasAttribute('data-tp-trimmed'))
+				continue;
+
+			/* descending: row.cells is live and shifts on removal */
+			for (let i = drop.length - 1; i >= 0; i--) {
+				const cell = row.cells && row.cells[drop[i]];
+
+				if (cell && cell.remove)
+					cell.remove();
+			}
+
+			row.setAttribute('data-tp-trimmed', '1');
+		}
 	},
 
 	brandFor(id, hostname) {
@@ -104,6 +169,7 @@ return baseclass.extend({
 
 	decorate() {
 		for (const table of document.querySelectorAll('table')) {
+			const map = this.tableMap(table);
 			const rows = table.rows ? Array.from(table.rows)
 				: Array.from(table.querySelectorAll('.tr'));
 
@@ -131,7 +197,7 @@ return baseclass.extend({
 				/* hook for user CSS; the theme itself does not style it */
 				table.classList.add('tp-lease-table');
 
-				const hostCell = cells[0];
+				const hostCell = cells[map.host] || cells[0];
 				const hostname = (hostCell.textContent || '')
 					.replace(/\s*\(.*\)\s*$/, '').trim();
 				const brand = this.brandFor(id, hostname);
@@ -144,6 +210,13 @@ return baseclass.extend({
 
 				hostCell.insertBefore(icon, hostCell.firstChild);
 			}
+
+			/* Interface/DUID columns only go in lease tables - other tables
+			   (routes, firewall, ...) legitimately have an Interface column */
+			if (map.drop.length &&
+				(table.classList.contains('tp-lease-table') ||
+					/^status_leases/.test(table.id || '')))
+				this.trimColumns(table, map.drop);
 		}
 	}
 });
