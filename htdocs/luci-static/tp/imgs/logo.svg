@@ -1,9 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 120" width="220" height="40" role="img" aria-label="T-Link">
-  <!-- fictional wordmark; changing the brand name only needs a text edit below.
-       for pixel-identical rendering on every device, convert the text to paths
-       (e.g. Inkscape: select-all; object-to-path; export) -->
-  <text x="4" y="94"
-        font-family="'Arial Black','Segoe UI',Arial,Helvetica,sans-serif"
-        font-size="104" font-weight="900" letter-spacing="-2"
-        fill="#FFFFFF">T-Link</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316 120" width="160" height="61" role="img" aria-label="T-Link">
+  <!-- fictional T-Link wordmark; glyph outlines converted from FreeSans Bold
+       (Apache-2.0) so rendering is identical on every device. Renaming the
+       brand means regenerating these outlines. -->
+  <g fill="#FFFFFF">
+    <path transform="translate(4.0,94.0) scale(0.10400,-0.10400)" d="M401 604V0H251V604H30V729H614V604Z"/>
+<path transform="translate(69.0,94.0) scale(0.10400,-0.10400)" d="M298 342V207H26V342Z"/>
+<path transform="translate(101.6,94.0) scale(0.10400,-0.10400)" d="M230 729V125H579V0H80V729Z"/>
+<path transform="translate(164.0,94.0) scale(0.10400,-0.10400)" d="M210 540V0H70V540ZM210 729V604H70V729Z"/>
+<path transform="translate(191.1,94.0) scale(0.10400,-0.10400)" d="M65 540H205V462Q263 549 367 549Q453 549 500.5 500.0Q548 451 548 362V0H408V333Q408 430 318 430Q267 430 236.0 401.0Q205 372 205 324V0H65Z"/>
+<path transform="translate(252.9,94.0) scale(0.10400,-0.10400)" d="M205 330 382 540H541L357 336L554 0H390L261 238L205 177V0H65V729H205Z"/>
+  </g>
 </svg>
