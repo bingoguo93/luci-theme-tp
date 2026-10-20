@@ -359,10 +359,10 @@ body.tp-logo-mode .sidebar-footer {
 .sidebar-footer a {
 	display: block;
 	color: #fff;
-	/* icon-only link: size and centre the glyph */
+	/* icon-only link: size the glyph, keep it left-aligned */
 	font-size: 22px;
 	line-height: 1;
-	text-align: center;
+	text-align: left;
 	text-decoration: none;
 	margin-bottom: 8px
 }
