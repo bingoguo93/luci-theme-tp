@@ -4,7 +4,7 @@
 
 return view.extend({
 	render() {
-		const form = document.querySelector('form');
+		const form = document.getElementById('loginform') || document.querySelector('form');
 		const pwd = document.querySelector('input[type="password"]');
 
 		if (!form)

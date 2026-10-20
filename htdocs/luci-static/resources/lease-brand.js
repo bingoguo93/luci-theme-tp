@@ -111,6 +111,11 @@ return baseclass.extend({
 				if (row.hasAttribute('data-tp-brand'))
 					continue;
 
+				/* rows containing form controls are edit rows (e.g. static
+				   leases), not lease listings - leave them alone */
+				if (row.querySelector && row.querySelector('input, textarea, select'))
+					continue;
+
 				const cells = row.cells ? Array.from(row.cells)
 					: Array.from(row.querySelectorAll('.td'));
 
@@ -123,6 +128,7 @@ return baseclass.extend({
 					continue;
 
 				row.setAttribute('data-tp-brand', '1');
+				/* hook for user CSS; the theme itself does not style it */
 				table.classList.add('tp-lease-table');
 
 				const hostCell = cells[0];
