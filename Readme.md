@@ -6,6 +6,10 @@ It is not intended to be used as a production theme, and may contain bugs and in
 The look is inspired by classic router admin pages. It is not affiliated with
 or endorsed by TP-Link; no TP-Link logos or artwork are included.
 
+Authentication plugins may inject HTML into the login form (`auth_html`,
+`auth_message`, `auth_assets`); like LuCI itself, the theme treats
+admin-installed plugins as trusted code.
+
 ## Features
 
 - Classic retro-router-styled header, sidebar and content layout

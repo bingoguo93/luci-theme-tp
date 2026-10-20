@@ -56,6 +56,10 @@
 						</div>
 					{% endfor %}
 				{% endif %}
+				{# auth_html / auth_assets / auth_message below are intentional raw
+				   HTML channels: they are produced by authentication plugins, which
+				   are admin-installed, trusted code (the same trust level as the
+				   views themselves). Structured auth_fields above are escaped. #}
 				{% if (auth_html): %}
 					<div class="cbi-value">
 						{{ auth_html }}
