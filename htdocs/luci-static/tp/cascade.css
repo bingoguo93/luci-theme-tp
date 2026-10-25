@@ -1012,8 +1012,8 @@ footer {
 }
 
 .network-status-table .ifacebox-body>span {
-	flex: 10 10 auto;
-	height: 35%
+	flex: 10 10 35%;
+	overflow: hidden;
 }
 
 .network-status-table .ifacebox-body>div {
